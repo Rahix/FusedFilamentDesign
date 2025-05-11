@@ -92,7 +92,7 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QCheckBox" name="checkBox">
+    <widget class="QCheckBox" name="UseGlobalTemplate">
      <property name="text">
       <string>Use global rib template</string>
      </property>

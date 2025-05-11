@@ -1,5 +1,7 @@
 import math
-from dataclasses import dataclass
+import dataclasses
+
+from PySide import QtCore, QtGui
 
 import FreeCADGui as Gui
 import FreeCAD as App
@@ -9,7 +11,7 @@ import Sketcher
 import ffDesign_Utils as Utils
 
 
-@dataclass
+@dataclasses.dataclass
 class RibParameters:
     # Thread General
     name: str
@@ -71,6 +73,279 @@ def make_parametric_circle(sketch, center_expr: str, size_expr: str):
     sketch.recompute()
 
 
+def make_rib_template(sketch, rib_param: RibParameters):
+    Utils.assert_sketch(sketch)
+
+    if len(sketch.Geometry) != 0:
+        Utils.Log.warning("Sketch for the rib thread template is not empty before generation?!")
+
+    center_circle = Part.Circle(App.Vector(0, 0, 0), App.Vector(0, 0, 1), rib_param.outer_diameter / 2)
+    rib_center_radius = (rib_param.normative - rib_param.rib_engagement * 2 + rib_param.rib_diameter) / 2
+    rib_center_circle = Part.Circle(App.Vector(0, 0, 0), App.Vector(0, 0, 1), rib_center_radius)
+
+    rib_center_circle_id = len(sketch.Geometry)
+    sketch.addGeometry(rib_center_circle)
+    sketch.toggleConstruction(rib_center_circle_id)
+
+    normative_circle_id = len(sketch.Geometry)
+    sketch.addGeometry(Part.Circle(App.Vector(0, 0, 0), App.Vector(0, 0, 1), rib_param.normative / 2))
+    sketch.toggleConstruction(normative_circle_id)
+
+    core_circle_id = len(sketch.Geometry)
+    sketch.addGeometry(Part.Circle(App.Vector(0, 0, 0), App.Vector(0, 0, 1), rib_param.core_diameter / 2))
+    sketch.toggleConstruction(core_circle_id)
+
+    rib_arc_ids = len(sketch.Geometry)
+    center_angles = []
+    for i in range(3):
+        a = i * math.pi * 2 / 3
+        rib_center = App.Vector(math.cos(a) * rib_center_radius, math.sin(a) * rib_center_radius, 0)
+        rib_circle = Part.Circle(
+            rib_center,
+            App.Vector(0, 0, 1),
+            rib_param.rib_diameter / 2,
+        )
+        intersections = center_circle.intersect(rib_circle)
+        if len(intersections) != 2:
+            raise Utils.ffDesignError("ribs do not intersect outer diameter, cannot proceed!")
+
+        center_angles += [math.atan2(p.Y, p.X) for p in intersections]
+
+        rib_intersections = [App.Vector(p.X, p.Y, 0) - rib_center for p in intersections]
+        rib_angles = [math.atan2(p.y, p.x) for p in rib_intersections]
+
+        sketch.addGeometry(Part.ArcOfCircle(rib_circle, rib_angles[0], rib_angles[1]))
+
+    assert len(center_angles) == 6
+    center_angles.sort()
+
+    center_arc_ids = len(sketch.Geometry)
+    new_geo = [
+        Part.ArcOfCircle(center_circle, center_angles[1], center_angles[2]),
+        Part.ArcOfCircle(center_circle, center_angles[3], center_angles[4]),
+        Part.ArcOfCircle(center_circle, center_angles[5], center_angles[0]),
+    ]
+    sketch.addGeometry(new_geo, False)
+
+    new_constraints = [
+        # Arc End Coincidences
+        Sketcher.Constraint("Coincident", center_arc_ids + 0, 2, rib_arc_ids + 0, 2),
+        Sketcher.Constraint("Coincident", center_arc_ids + 1, 1, rib_arc_ids + 0, 1),
+        Sketcher.Constraint("Coincident", center_arc_ids + 1, 2, rib_arc_ids + 1, 2),
+        Sketcher.Constraint("Coincident", center_arc_ids + 2, 1, rib_arc_ids + 1, 1),
+        Sketcher.Constraint("Coincident", center_arc_ids + 2, 2, rib_arc_ids + 2, 2),
+        Sketcher.Constraint("Coincident", center_arc_ids + 0, 1, rib_arc_ids + 2, 1),
+        # Arc Centers
+        Sketcher.Constraint("Coincident", rib_center_circle_id, 3, -1, 1),
+        Sketcher.Constraint("Coincident", normative_circle_id, 3, -1, 1),
+        Sketcher.Constraint("Coincident", core_circle_id, 3, -1, 1),
+        Sketcher.Constraint("Coincident", center_arc_ids + 0, 3, -1, 1),
+        Sketcher.Constraint("Coincident", center_arc_ids + 1, 3, -1, 1),
+        Sketcher.Constraint("Coincident", center_arc_ids + 2, 3, -1, 1),
+        Sketcher.Constraint("PointOnObject", rib_arc_ids + 0, 3, rib_center_circle_id),
+        Sketcher.Constraint("PointOnObject", rib_arc_ids + 1, 3, rib_center_circle_id),
+        Sketcher.Constraint("PointOnObject", rib_arc_ids + 2, 3, rib_center_circle_id),
+        # Arc Equalities
+        Sketcher.Constraint("Equal", center_arc_ids + 0, center_arc_ids + 1),
+        Sketcher.Constraint("Equal", center_arc_ids + 0, center_arc_ids + 2),
+        Sketcher.Constraint("Equal", rib_arc_ids + 0, rib_arc_ids + 1),
+        Sketcher.Constraint("Equal", rib_arc_ids + 0, rib_arc_ids + 2),
+    ]
+    sketch.addConstraint(new_constraints)
+
+    dia_constraint_ids = len(sketch.Constraints)
+    new_constraints = [
+        # Diameters
+        Sketcher.Constraint("Diameter", rib_center_circle_id, rib_center_radius * 2),
+        Sketcher.Constraint("Diameter", center_arc_ids + 0, rib_param.outer_diameter),
+        Sketcher.Constraint("Diameter", rib_arc_ids + 0, rib_param.rib_diameter),
+        Sketcher.Constraint("Diameter", normative_circle_id, rib_param.normative),
+        Sketcher.Constraint("Diameter", core_circle_id, rib_param.core_diameter),
+    ]
+    sketch.addConstraint(new_constraints)
+    sketch.renameConstraint(dia_constraint_ids + 1, "outer_diameter")
+    sketch.renameConstraint(dia_constraint_ids + 2, "rib_diameter")
+    sketch.renameConstraint(dia_constraint_ids + 3, "normative_diameter")
+    sketch.renameConstraint(dia_constraint_ids + 4, "core_diameter")
+
+    # Lines for distance between ribs
+    line_ids = len(sketch.Geometry)
+    for i in range(3):
+        center1 = sketch.Geometry[rib_arc_ids + i].Center
+        center2 = sketch.Geometry[rib_arc_ids + ((i + 1) % 3)].Center
+
+        line_id = len(sketch.Geometry)
+        sketch.addGeometry(Part.LineSegment(center1, center2))
+        sketch.toggleConstruction(line_id)
+        new_constraints = [
+            Sketcher.Constraint("Coincident", line_id, 1, rib_arc_ids + i, 3),
+            Sketcher.Constraint("Coincident", line_id, 2, rib_arc_ids + ((i + 1) % 3), 3),
+        ]
+        sketch.addConstraint(new_constraints)
+
+    # Constrain distance between ribs to be equal
+    new_constraints = [
+        Sketcher.Constraint("Equal", line_ids + 0, line_ids + 1),
+        Sketcher.Constraint("Equal", line_ids + 0, line_ids + 2),
+    ]
+    sketch.addConstraint(new_constraints)
+
+    # Finally, constrain rotation of the ribs around the center
+    new_constraints = [
+        Sketcher.Constraint("PointOnObject", rib_arc_ids + 0, 3, -1),
+    ]
+    sketch.addConstraint(new_constraints)
+    sketch.recompute()
+
+
+def write_rib_param_properties(template, rib_param: RibParameters):
+    Utils.assert_sketch(template)
+
+    if "EntranceDepth" not in template.PropertiesList:
+        template.addProperty("App::PropertyLength", "EntranceDepth", group="RibParameters")
+    if "OuterDiameter" not in template.PropertiesList:
+        template.addProperty("App::PropertyLength", "OuterDiameter", group="RibParameters")
+    if "RibEngagement" not in template.PropertiesList:
+        template.addProperty("App::PropertyLength", "RibEngagement", group="RibParameters")
+    if "RibDiameter" not in template.PropertiesList:
+        template.addProperty("App::PropertyLength", "RibDiameter", group="RibParameters")
+
+    template.EntranceDepth = rib_param.entrance_depth
+    template.OuterDiameter = rib_param.outer_diameter
+    template.RibEngagement = rib_param.rib_engagement
+    template.RibDiameter = rib_param.rib_diameter
+
+    # Make properties read-only
+    template.setEditorMode("EntranceDepth", 1)
+    template.setEditorMode("OuterDiameter", 1)
+    template.setEditorMode("RibEngagement", 1)
+    template.setEditorMode("RibDiameter", 1)
+
+
+def rib_template_name(hole, global_template: bool):
+    if global_template:
+        return f"RibThread_{hole.ThreadSize}_Template"
+    else:
+        return f"{hole.Name}_RibThread_Template"
+
+
+def find_rib_template(body, hole, global_template: bool):
+    name = rib_template_name(hole, global_template)
+    if global_template:
+        return body.Document.getObject(name)
+    else:
+        return body.getObject(name)
+
+
+def has_rib_template(body, hole, global_template: bool) -> bool:
+    return find_rib_template(body, hole, global_template) is not None
+
+
+def get_or_create_rib_template(body, hole, global_template: bool, rib_param: RibParameters):
+    template = find_rib_template(body, hole, global_template)
+    if template is not None:
+        return template
+
+    name = rib_template_name(hole, global_template)
+    if global_template:
+        template = body.Document.addObject("Sketcher::SketchObject", name)
+    else:
+        template = body.newObject("Sketcher::SketchObject", name)
+        template.Label = f"{hole.Label}_RibThread_Template"
+
+    template.Visibility = False
+
+    make_rib_template(template, rib_param)
+    write_rib_param_properties(template, rib_param)
+
+    return template
+
+
+def make_rib_threads(body, hole, global_template: bool, rib_param: RibParameters):
+    Utils.assert_body(body)
+    Utils.assert_hole(hole)
+
+    profile_sketch = Utils.get_hole_profile_sketch(hole)
+
+    template = get_or_create_rib_template(body, hole, global_template, rib_param)
+
+    # Only generate the varset if it does not exist yet
+    varset = body.getObject(f"{hole.Name}_RibThread_Settings")
+    if varset is None:
+        varset = body.newObject("App::VarSet", f"{hole.Name}_RibThread_Settings")
+        varset.Label = f"{hole.Label}_RibThread"
+        varset.addProperty("App::PropertyLength", "EntranceDepth", "Base")
+        varset.addProperty("App::PropertyLength", "EntranceDiameter", "Base")
+        varset.addProperty("App::PropertyAngle", "Rotation", "Base")
+        varset.EntranceDepth = f"{rib_param.entrance_depth} mm"
+        varset.EntranceDiameter = f"{rib_param.outer_diameter} mm"
+        varset.Rotation = "0 deg"
+        varset.recompute()
+
+    sketch_entrance = Utils.make_derived_sketch(body, profile_sketch, "_ThreadEntrance")
+
+    shape_binders = []
+    for index, circle in enumerate(profile_sketch.Geometry):
+        if circle.TypeId != "Part::GeomCircle":
+            continue
+
+        make_parametric_circle(
+            sketch_entrance,
+            f"{profile_sketch.Name}.Geometry[{index}].Center",
+            f"{varset.Name}.EntranceDiameter",
+        )
+
+        binder = Utils.make_sketch_offset_shape_binder(
+            body=body,
+            template=template,
+            sketch=profile_sketch,
+            suffix=f"_RibThread{index + 1:03}",
+            center_expr=f"{profile_sketch.Name}.Geometry[{index}].Center",
+            rotation_expr=f"{varset.Name}.Rotation",
+        )
+        shape_binders.append(binder)
+
+    # Create merged shape-binder
+    merged_binder = body.newObject("PartDesign::SubShapeBinder", f"{hole.Name}_RibThreads")
+    merged_binder.Support = [(b, "") for b in shape_binders]
+    merged_binder.Relative = True
+    merged_binder.ViewObject.LineColor = (1.0, 0.84, 0.0, 0.60)
+    merged_binder.ViewObject.PointColor = (1.0, 0.84, 0.0, 0.60)
+    m = merged_binder.ViewObject.ShapeAppearance[0]
+    m.DiffuseColor = (1.0, 0.84, 0.0, 0.60)
+    merged_binder.ViewObject.ShapeAppearance = (m,)
+    merged_binder.ViewObject.Transparency = 60
+    merged_binder.recompute()
+
+    pocket_ribs = body.newObject("PartDesign::Pocket", f"{hole.Name}_ThreadRibs")
+    pocket_ribs.Profile = (merged_binder, "")
+    pocket_ribs.Reversed = hole.Reversed
+    merged_binder.Visibility = False
+    pocket_ribs.setExpression("Type", f"{hole.Name}.DepthType")
+    pocket_ribs.setExpression("Length", f"{hole.Name}.Depth")
+    pocket_ribs.Label = f"{hole.Label}_ThreadRibs"
+    pocket_ribs.recompute()
+
+    if hole.Reversed:
+        sketch_entrance.setExpression(".AttachmentOffset.Base.z", f"{varset.Name}.EntranceDepth")
+    else:
+        sketch_entrance.setExpression(".AttachmentOffset.Base.z", f"-{varset.Name}.EntranceDepth")
+    sketch_entrance.recompute()
+
+    pocket_entrance = body.newObject("PartDesign::Pocket", f"{hole.Name}_ThreadEntrance")
+    pocket_entrance.Profile = (sketch_entrance, "")
+    pocket_entrance.ReferenceAxis = (sketch_entrance, ["N_Axis"])
+    pocket_entrance.Reversed = hole.Reversed
+    pocket_entrance.Type = "TwoLengths"
+    pocket_entrance.TaperAngle = "-20 deg"
+    sketch_entrance.Visibility = False
+    # 2.8 is roughly the tan(90 - 20 deg), so the taper will be complete
+    pocket_entrance.setExpression("Length", f"({varset.Name}.EntranceDiameter - {hole.Name}.Diameter) * 2.8")
+    pocket_entrance.setExpression("Length2", f"{varset.Name}.EntranceDepth")
+    pocket_entrance.Label = f"{hole.Label}_ThreadEntrance"
+    pocket_entrance.recompute()
+
+
 class RibThreadsTaskPanel:
     def __init__(self, body, hole):
         Utils.assert_body(body)
@@ -78,9 +353,13 @@ class RibThreadsTaskPanel:
 
         self.body = body
         self.hole = hole
+        self.global_template = False
+        self.template_exists = False
         self.form = Gui.PySideUic.loadUi(Utils.Resources.get_panel("ffDesign_RibThreads.ui"))
 
-        self.form.InfoMessage.setText("Creating a new rib template sketch...")
+        self.form.UseGlobalTemplate.setCheckState(QtCore.Qt.CheckState.Checked)
+        self.form.UseGlobalTemplate.checkStateChanged.connect(self.onUseGlobalTemplate)
+        self.onUseGlobalTemplate()
 
         self.form.ThreadNormative.setText(str(self.hole.ThreadSize))
         self.form.ThreadNormative.setEnabled(False)
@@ -95,12 +374,119 @@ class RibThreadsTaskPanel:
             self.form.OuterDiameter.setProperty("rawValue", rib_param.outer_diameter)
             self.form.RibEngagement.setProperty("rawValue", rib_param.rib_engagement)
             self.form.RibDiameter.setProperty("rawValue", rib_param.rib_diameter)
+        else:
+            self.form.ThreadCore.setProperty("rawValue", hole.Diameter)
+
+    def onUseGlobalTemplate(self):
+        self.global_template = self.form.UseGlobalTemplate.checkState() == QtCore.Qt.CheckState.Checked
+        self.updateTemplatePresence()
+
+    def updateTemplatePresence(self):
+        template = find_rib_template(self.body, self.hole, self.global_template)
+        self.template_exists = template is not None
+
+        if template is not None:
+            if "EntranceDepth" in template.PropertiesList:
+                self.form.EntranceDepth.setProperty("rawValue", template.EntranceDepth.Value)
+            if "OuterDiameter" in template.PropertiesList:
+                self.form.OuterDiameter.setProperty("rawValue", template.OuterDiameter.Value)
+            if "RibEngagement" in template.PropertiesList:
+                self.form.RibEngagement.setProperty("rawValue", template.RibEngagement.Value)
+            if "RibDiameter" in template.PropertiesList:
+                self.form.RibDiameter.setProperty("rawValue", template.RibDiameter.Value)
+
+        self.updateEditability()
+        self.updateInfoMessage()
+
+    def updateEditability(self):
+        self.form.EntranceDepth.setEnabled(not self.template_exists)
+        self.form.OuterDiameter.setEnabled(not self.template_exists)
+        self.form.RibEngagement.setEnabled(not self.template_exists)
+        self.form.RibDiameter.setEnabled(not self.template_exists)
+
+    def updateInfoMessage(self):
+        self.form.InfoMessage.setTextFormat(QtCore.Qt.TextFormat.RichText)
+        if self.global_template and self.template_exists:
+            self.form.InfoMessage.setText(f'<font color="#008000">Using existing global template...</font>')
+        elif self.global_template and not self.template_exists:
+            self.form.InfoMessage.setText(
+                f'<font color="#008000">Creating new global template for {self.hole.ThreadSize}...</font>'
+            )
+        elif not self.global_template and self.template_exists:
+            self.form.InfoMessage.setText(f'<font color="#008000">Reusing existing template for this hole...</font>')
+        else:
+            self.form.InfoMessage.setText(f'<font color="#008000">Creating new template...</font>')
+
+    def build_rib_parameters(self):
+        if self.hole.ThreadSize in RIB_PARAMETERS:
+            rib_param = dataclasses.replace(
+                RIB_PARAMETERS[self.hole.ThreadSize],
+                entrance_depth=self.form.EntranceDepth.property("rawValue"),
+                outer_diameter=self.form.OuterDiameter.property("rawValue"),
+                rib_engagement=self.form.RibEngagement.property("rawValue"),
+                rib_diameter=self.form.RibDiameter.property("rawValue"),
+            )
+        else:
+            # Pull the normative diameter from the thread size string
+            normative_diameter = float(self.hole.ThreadSize[1:].split("x", 1)[0])
+
+            rib_param = RibParameters(
+                name=self.hole.ThreadSize,
+                normative=normative_diameter,
+                core_bore=self.form.ThreadCore.property("rawValue"),
+                core_diameter=self.form.ThreadCore.property("rawValue"),
+                entrance_depth=self.form.EntranceDepth.property("rawValue"),
+                outer_diameter=self.form.OuterDiameter.property("rawValue"),
+                rib_engagement=self.form.RibEngagement.property("rawValue"),
+                rib_diameter=self.form.RibDiameter.property("rawValue"),
+            )
+
+        # Now make sure that these parameter sets are consistent
+        if self.hole.Diameter > rib_param.normative:
+            raise Utils.ffDesignError("Hole diameter exceeds normative thread diameter.  Something is way off...")
+
+        if self.hole.Diameter > (rib_param.normative - rib_param.rib_engagement * 2):
+            Utils.warning_confirm_proceed("Drill diameter of Hole is too big for ribs - they will get cut off!")
+
+        return rib_param
 
     def accept(self):
-        Gui.Control.closeDialog()
+        try:
+            rib_param = self.build_rib_parameters()
+            Gui.Control.closeDialog()
+
+            try:
+                App.ActiveDocument.openTransaction("Add thread forming ribs")
+                make_rib_threads(self.body, self.hole, self.global_template, rib_param)
+                App.ActiveDocument.recompute()
+            except Exception as e:
+                App.ActiveDocument.abortTransaction()
+                raise e from None
+            else:
+                App.ActiveDocument.commitTransaction()
+        except Utils.ffDesignError:
+            pass
 
     def reject(self):
         Gui.Control.closeDialog()
+
+
+def verify_rib_thread_suitability(hole):
+    Utils.assert_hole(hole)
+
+    if Utils.hole_has_counterbore_maybe(hole):
+        Utils.Log.warning(
+            "Making thread forming ribs on a hole with counterbore.  The result will probably be unexpected..."
+        )
+
+    if not hole.Threaded:
+        raise Utils.ffDesignError("Cannot make thread forming ribs on a hole that is not threaded!")
+
+    if hole.ModelThread:
+        raise Utils.ffDesignError("Cannot make thread forming ribs on a hole with modelled threads!")
+
+    if hole.Tapered:
+        raise Utils.ffDesignError("Cannot make thread forming ribs on a tapered hole!")
 
 
 class RibThreadsCommand:
@@ -121,17 +507,10 @@ class RibThreadsCommand:
             hole = Utils.get_selected_hole()
             body = Utils.get_active_part_design_body_for_feature(hole)
 
+            verify_rib_thread_suitability(hole)
+
             dialog = RibThreadsTaskPanel(body, hole)
             Gui.Control.showDialog(dialog)
-
-            # try:
-            #     App.ActiveDocument.openTransaction("Add counterbores bridges")
-            #     raise Utils.ffDesignError("Not implemented yet")
-            # except Exception as e:
-            #     App.ActiveDocument.abortTransaction()
-            #     raise e from None
-            # else:
-            #     App.ActiveDocument.commitTransaction()
         except Utils.ffDesignError:
             pass
 
