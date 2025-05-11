@@ -9,6 +9,8 @@ The addon adds a new toolbar to the [PartDesign][fc-partdesign] workbench where
 the new tools can be accessed.  Check the tooltips for some preliminary usage
 documentation.
 
+![Screenshot of the FusedFilamentDesign toolbar](./Resources/toolbar.png)
+
 ## Status
 This addon is still work in progress.  Only a few of the features listed below
 are already implemented.  The ones that are already available can be used
