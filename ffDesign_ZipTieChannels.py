@@ -10,11 +10,33 @@ import Sketcher
 import ffDesign_Utils as Utils
 
 
-def make_zip_tie_channel_template(
+def make_zip_tie_channel_settings(
     body,
     original,
     *,
     width: App.Units.Quantity,
+):
+    Utils.assert_body(body)
+
+    width = App.Units.Quantity(width)
+    assert width.Unit.Type == "Length"
+
+    varset = body.newObject("App::VarSet", f"{original.Name}_ZipTieChannel_Settings")
+    varset.Label = f"{original.Label}_ZipTieChannel_Settings"
+
+    varset.addProperty("App::PropertyLength", "ChannelWidth", group="Base")
+    varset.ChannelWidth = width
+    varset.addProperty("App::PropertyAngle", "ChannelRotation", group="Base")
+    varset.ChannelRotation = "90 deg"
+    varset.recompute()
+
+    return varset
+
+
+def make_zip_tie_channel_template(
+    body,
+    original,
+    *,
     thickness: App.Units.Quantity,
     bridge_dia: App.Units.Quantity,
 ):
@@ -23,18 +45,10 @@ def make_zip_tie_channel_template(
     sketch.Label = f"{original.Label}_ZipTieChannel_Template"
     sketch.Visibility = False
 
-    width = App.Units.Quantity(width)
-    assert width.Unit.Type == "Length"
     thickness = App.Units.Quantity(thickness)
     assert thickness.Unit.Type == "Length"
     bridge_dia = App.Units.Quantity(bridge_dia)
     assert bridge_dia.Unit.Type == "Length"
-
-    sketch.addProperty("App::PropertyLength", "ChannelWidth", group="ZipTieChannel")
-    sketch.ChannelWidth = width
-
-    sketch.addProperty("App::PropertyAngle", "ChannelRotation", group="ZipTieChannel")
-    sketch.ChannelRotation = "90 deg"
 
     dist_inner = bridge_dia.Value / 2
     dist_outer = dist_inner + thickness.Value
@@ -83,10 +97,11 @@ def make_zip_tie_channel_template(
     return sketch
 
 
-def make_zip_tie_channel(body, original, template, suffix: str, center_expr: str):
+def make_zip_tie_channel(body, original, template, settings, suffix: str, center_expr: str):
     Utils.assert_body(body)
     Utils.assert_sketch(original)
     Utils.assert_sketch(template)
+    Utils.assert_varset(settings)
 
     binder = Utils.make_sketch_offset_shape_binder(
         body,
@@ -94,14 +109,14 @@ def make_zip_tie_channel(body, original, template, suffix: str, center_expr: str
         sketch=original,
         suffix=suffix + "_Binder",
         center_expr=center_expr,
-        rotation_expr=f"rotation({template.Name}.ChannelRotation; 0; 90 deg)",
+        rotation_expr=f"rotation({settings.Name}.ChannelRotation; 0; 90 deg)",
     )
 
     pocket = body.newObject("PartDesign::Pocket", original.Name + suffix)
     pocket.Profile = (binder, "")
     pocket.Midplane = True
     binder.Visibility = False
-    pocket.setExpression("Length", f"{template.Name}.ChannelWidth")
+    pocket.setExpression("Length", f"{settings.Name}.ChannelWidth")
     pocket.Label = original.Label + suffix
     pocket.recompute()
 
@@ -123,16 +138,20 @@ def make_zip_tie_channels_from_sketch(
     Utils.assert_body(body)
     Utils.assert_sketch(sketch)
 
-    template = make_zip_tie_channel_template(body, sketch, width=width, thickness=thickness, bridge_dia=bridge_dia)
+    settings = make_zip_tie_channel_settings(body, sketch, width=width)
+    template = make_zip_tie_channel_template(body, sketch, thickness=thickness, bridge_dia=bridge_dia)
 
     for point_idx in find_points_in_sketch(sketch):
         make_zip_tie_channel(
             body,
             sketch,
             template,
+            settings,
             suffix=f"_ZipTieChannel{point_idx+1:03}",
             center_expr=f"vector({sketch.Name}.Geometry[{point_idx}].X; {sketch.Name}.Geometry[{point_idx}].Y; 0)",
         )
+
+    sketch.Visibility = False
 
 
 class ZipTieChannelsTaskPanel:

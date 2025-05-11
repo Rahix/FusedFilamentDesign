@@ -64,6 +64,10 @@ def assert_sketch(obj):
     assert obj.TypeId == "Sketcher::SketchObject"
 
 
+def assert_varset(obj):
+    assert obj.TypeId == "App::VarSet"
+
+
 def check_hole_tool_preconditions() -> bool:
     if not App.ActiveDocument:
         return False
