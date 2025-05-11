@@ -73,6 +73,15 @@ def check_hole_tool_preconditions() -> bool:
     return sel[0].TypeId == "PartDesign::Hole"
 
 
+def check_sketch_tool_preconditions() -> bool:
+    if not App.ActiveDocument:
+        return False
+    sel = Gui.Selection.getSelection()
+    if len(sel) != 1:
+        return False
+    return sel[0].TypeId == "Sketcher::SketchObject"
+
+
 def get_active_part_design_body_for_feature(obj):
     parent_body = obj.getParent()
     active_body = Gui.ActiveDocument.ActiveView.getActiveObject("pdbody")
@@ -105,6 +114,17 @@ def get_selected_hole():
         raise ffDesignError("Exactly one Hole feature must be selected.")
     if sel[0].TypeId != "PartDesign::Hole":
         raise ffDesignError(f"Selected object is not a PartDesign Hole feature (is a {sel[0].TypeId!r} instead).")
+    return sel[0]
+
+
+def get_selected_sketch():
+    if not App.ActiveDocument:
+        raise ffDesignError("No active document")
+    sel = Gui.Selection.getSelection()
+    if len(sel) != 1:
+        raise ffDesignError("Exactly one Sketch must be selected.")
+    if sel[0].TypeId != "Sketcher::SketchObject":
+        raise ffDesignError(f"Selected object is not a Sketch (is a {sel[0].TypeId!r} instead).")
     return sel[0]
 
 

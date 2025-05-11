@@ -5,6 +5,7 @@ import ffDesign_HoleWizard
 import ffDesign_CounterboreBridges
 import ffDesign_RibThreads
 import ffDesign_Teardrop
+import ffDesign_ZipTieChannels
 
 
 def register_pd_toolbar():
