@@ -309,12 +309,7 @@ def make_rib_threads(body, hole, global_template: bool, rib_param: RibParameters
     merged_binder = body.newObject("PartDesign::SubShapeBinder", f"{hole.Name}_RibThreads")
     merged_binder.Support = [(b, "") for b in shape_binders]
     merged_binder.Relative = True
-    merged_binder.ViewObject.LineColor = (1.0, 0.84, 0.0, 0.60)
-    merged_binder.ViewObject.PointColor = (1.0, 0.84, 0.0, 0.60)
-    m = merged_binder.ViewObject.ShapeAppearance[0]
-    m.DiffuseColor = (1.0, 0.84, 0.0, 0.60)
-    merged_binder.ViewObject.ShapeAppearance = (m,)
-    merged_binder.ViewObject.Transparency = 60
+    Utils.set_shape_binder_styles(merged_binder)
     merged_binder.recompute()
 
     pocket_ribs = body.newObject("PartDesign::Pocket", f"{hole.Name}_ThreadRibs")

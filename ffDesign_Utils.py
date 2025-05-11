@@ -180,6 +180,15 @@ def make_derived_sketch(body, original, suffix: str):
     return sketch
 
 
+def set_shape_binder_styles(binder):
+    binder.ViewObject.LineColor = (1.0, 0.84, 0.0, 0.60)
+    binder.ViewObject.PointColor = (1.0, 0.84, 0.0, 0.60)
+    m = binder.ViewObject.ShapeAppearance[0]
+    m.DiffuseColor = (1.0, 0.84, 0.0, 0.60)
+    binder.ViewObject.ShapeAppearance = (m,)
+    binder.ViewObject.Transparency = 60
+
+
 def make_sketch_offset_shape_binder(body, template, sketch, suffix: str, center_expr: str, rotation_expr: str):
     assert_body(body)
     assert_sketch(template)
@@ -189,6 +198,7 @@ def make_sketch_offset_shape_binder(body, template, sketch, suffix: str, center_
     shape_binder.Support = (template, "")
     shape_binder.Relative = False
     shape_binder.Visibility = False
+    set_shape_binder_styles(shape_binder)
     shape_binder.setExpression(
         "Placement",
         f"{sketch.Name}.Placement * placement({center_expr}; rotation({rotation_expr}; 0; 0))",
