@@ -15,9 +15,9 @@ are already implemented.  The ones that are already available can be used
 without worries.
 
 ## Features
-- **Hole Wizard** — Various tools for enhancing [PartDesign Hole][fc-hole] features
-  * Implementation of the [overhanging counterbore trick][df3dp-counterbore] (**R3.5**)
-  * Hole geometry for [rib thread forming][df3dp-ribthreads] (**R5.4**)
+- <img src="./Resources/icons/ffDesign_HoleWizard.svg" height="12" /> **Hole Wizard** — Various tools for enhancing [PartDesign Hole][fc-hole] features
+  * <img src="./Resources/icons/ffDesign_CounterboreBridges.svg" height="12" /> Implementation of the [overhanging counterbore trick][df3dp-counterbore] (**R3.5**)
+  * <img src="./Resources/icons/ffDesign_RibThreads.svg" height="12" /> Hole geometry for [rib thread forming][df3dp-ribthreads] (**R5.4**)
   * _Planned:_ [Sacrificial layers][df3dp-sacrificial] for holes (**R3.4**)
   * _Planned:_ Teardrop-shaped holes for [better horizontal holes][df3dp-horizontal-holes] and to avoid [seam inaccuracy][df3dp-seam] (**R2.2** & **R2.3**)
   * _Planned:_ Roof bridges for [horizontal holes][df3dp-horizontal-holes] (**R2.2**)
