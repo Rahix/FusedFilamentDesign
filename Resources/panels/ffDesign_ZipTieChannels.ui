@@ -29,6 +29,11 @@
      <property name="minimum" stdset="0">
       <double>0.000000000000000</double>
      </property>
+     <property name="toolTip">
+      <string>The central bridge under which the zip tie passes through.
+
+The bridge diameter significantly affects the strength of the channel.</string>
+     </property>
     </widget>
    </item>
    <item row="3" column="0">
@@ -45,6 +50,11 @@
      </property>
      <property name="minimum" stdset="0">
       <double>0.000000000000000</double>
+     </property>
+     <property name="toolTip">
+      <string>Thickness of the zip ties.
+
+It is a good idea to add generous clearance, makes it easier to insert the zip ties.</string>
      </property>
     </widget>
    </item>
@@ -69,6 +79,11 @@
      </property>
      <property name="minimum" stdset="0">
       <double>0.000000000000000</double>
+     </property>
+     <property name="toolTip">
+      <string>Width of the zip ties.
+
+Don't forget to add some clearance gap.</string>
      </property>
     </widget>
    </item>
