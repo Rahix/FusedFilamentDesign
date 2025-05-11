@@ -4,6 +4,16 @@ This is a [FreeCAD PartDesign][fc-partdesign] addon for FFF/FDM 3D-printing desi
 
 ![A demo screenshot of the Hole Wizard in action](./Resources/splash.png)
 
+## Usage
+The addon adds a new toolbar to the [PartDesign][fc-partdesign] workbench where
+the new tools can be accessed.  Check the tooltips for some preliminary usage
+documentation.
+
+## Status
+This addon is still work in progress.  Only a few of the features listed below
+are already implemented.  The ones that are already available can be used
+without worries.
+
 ## Features
 - **Hole Wizard** — Various tools for enhancing [PartDesign Hole][fc-hole] features
   * Implementation of the [overhanging counterbore trick][df3dp-counterbore] (**R3.5**)
