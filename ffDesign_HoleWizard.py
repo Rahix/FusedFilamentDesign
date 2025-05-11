@@ -1,19 +1,14 @@
-import os
-
 import FreeCADGui
 import FreeCAD
 
-
-mod_path = os.path.dirname(__file__)
-icons_path = os.path.join(mod_path, "Resources", "icons")
-panels_path = os.path.join(mod_path, "Resources", "panels")
+import ffDesign_Utils as Utils
 
 
 class HoleWizardTaskPanel:
     def __init__(self, hole):
         assert hole.TypeId == "PartDesign::Hole"
         self.hole = hole
-        self.form = FreeCADGui.PySideUic.loadUi(os.path.join(panels_path, "ffDesign_HoleWizard.ui"))
+        self.form = FreeCADGui.PySideUic.loadUi(Utils.Resources.get_panel("ffDesign_HoleWizard.ui"))
 
         self.form.AddCounterboreBridges.clicked.connect(self.addCounterboreBridges)
         self.form.AddRibThreads.clicked.connect(self.addRibThreads)
@@ -38,19 +33,19 @@ class HoleWizardTaskPanel:
         self.form.AddRibThreads.setEnabled(is_threaded)
 
     def addCounterboreBridges(self):
-        print("[ffDesign] TODO: Add counterbore bridges")
         FreeCADGui.Control.closeDialog()
+        FreeCADGui.runCommand("ffDesign_CounterboreBridges")
 
     def addRibThreads(self):
-        print("[ffDesign] TODO: Add rib threads")
+        Utils.Log.warning("TODO: Add rib threads")
         FreeCADGui.Control.closeDialog()
 
     def addRoofBridge(self):
-        print("[ffDesign] TODO: Add roof bridge")
+        Utils.Log.warning("TODO: Add roof bridge")
         FreeCADGui.Control.closeDialog()
 
     def addTeardropShape(self):
-        print("[ffDesign] TODO: Add teardrop shape")
+        Utils.Log.warning("TODO: Add teardrop shape")
         FreeCADGui.Control.closeDialog()
 
     def accept(self):
@@ -63,7 +58,7 @@ class HoleWizardTaskPanel:
 class HoleWizardCommand:
     def GetResources(self):
         return {
-            "Pixmap": os.path.join(icons_path, "ffDesign_HoleWizard.svg"),
+            "Pixmap": Utils.Resources.get_icon("ffDesign_HoleWizard.svg"),
             "MenuText": FreeCAD.Qt.translate("ffDesign", "Hole Wizard"),
             "ToolTip": FreeCAD.Qt.translate(
                 "ffDesign",
@@ -75,26 +70,13 @@ class HoleWizardCommand:
         }
 
     def Activated(self):
-        if not FreeCAD.ActiveDocument:
-            print("[ffDesign] No active document.")
-            return
-        sel = FreeCADGui.Selection.getSelection()
-        if len(sel) != 1:
-            print("[ffDesign] Exactly one Hole feature must be selected")
-            return
-        if sel[0].TypeId != "PartDesign::Hole":
-            print("[ffDesign] Selected object is not a PartDesign Hole feature")
-            return
-        dialog = HoleWizardTaskPanel(sel[0])
-        FreeCADGui.Control.showDialog(dialog)
+        hole = Utils.get_selected_hole()
+        if hole is not None:
+            dialog = HoleWizardTaskPanel(hole)
+            FreeCADGui.Control.showDialog(dialog)
 
     def IsActive(self):
-        if not FreeCAD.ActiveDocument:
-            return False
-        sel = FreeCADGui.Selection.getSelection()
-        if len(sel) != 1:
-            return False
-        return sel[0].TypeId == "PartDesign::Hole"
+        return Utils.check_hole_tool_preconditions()
 
 
 FreeCADGui.addCommand("ffDesign_HoleWizard", HoleWizardCommand())
