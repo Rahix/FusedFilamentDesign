@@ -58,11 +58,11 @@ Preconditions:
       <string>Add Teardrop Shape</string>
      </property>
      <property name="toolTip">
-      <string>This feature is unfortunately not implemented yet :/</string>
+      <string>Add a teardrop shape to a hole.</string>
      </property>
      <property name="icon">
-      <iconset resource="Icons/resource.qrc">
-      <normaloff>:/icons/help-browser.svg</normaloff>:/icons/help-browser.svg</iconset>
+      <iconset>
+       <normaloff>icons:ffDesign_Teardrop.svg</normaloff>icons:ffDesign_Teardrop.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
