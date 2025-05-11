@@ -172,6 +172,7 @@ class CounterboreBridgesCommand:
             try:
                 App.ActiveDocument.openTransaction("Add counterbores bridges")
                 make_upside_down_counterbores(body, hole)
+                App.ActiveDocument.recompute()
             except Exception as e:
                 App.ActiveDocument.abortTransaction()
                 raise e from None
