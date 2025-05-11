@@ -34,7 +34,7 @@ class HoleWizardTaskPanel:
 
     def addRibThreads(self):
         FreeCADGui.Control.closeDialog()
-        Utils.Log.error("TODO: Add rib threads")
+        FreeCADGui.runCommand("ffDesign_RibThreads")
 
     def addRoofBridge(self):
         FreeCADGui.Control.closeDialog()

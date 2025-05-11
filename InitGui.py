@@ -3,6 +3,7 @@ import FreeCADGui
 
 import ffDesign_HoleWizard
 import ffDesign_CounterboreBridges
+import ffDesign_RibThreads
 
 
 def register_pd_toolbar():
@@ -25,8 +26,6 @@ def register_pd_toolbar():
 
         # Commands to be added:
         ff_toolbar.SetString("ffDesign_HoleWizard", "ffDesign")
-        ff_toolbar.SetString("Separator1", "Separator")
-        ff_toolbar.SetString("ffDesign_CounterboreBridges", "ffDesign")
 
         ff_toolbar.SetBool("Active", 1)
 

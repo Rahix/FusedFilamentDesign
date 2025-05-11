@@ -23,11 +23,14 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Add Rib Threads</string>
+      <string>Add Thread Forming Ribs</string>
+     </property>
+     <property name="toolTip">
+      <string>Add ribs to a hole that allow a screw to form its own thread.</string>
      </property>
      <property name="icon">
-      <iconset resource="Icons/resource.qrc">
-      <normaloff>:/icons/help-browser.svg</normaloff>:/icons/help-browser.svg</iconset>
+      <iconset>
+       <normaloff>icons:ffDesign_RibThreads.svg</normaloff>icons:ffDesign_RibThreads.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
