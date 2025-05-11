@@ -172,7 +172,15 @@ class CounterboreBridgesCommand:
         try:
             hole = Utils.get_selected_hole()
             body = Utils.get_active_part_design_body_for_feature(hole)
-            make_upside_down_counterbores(body, hole)
+
+            try:
+                App.ActiveDocument.openTransaction("Add counterbores bridges")
+                make_upside_down_counterbores(body, hole)
+            except Exception as e:
+                App.ActiveDocument.abortTransaction()
+                raise e from None
+            else:
+                App.ActiveDocument.commitTransaction()
         except Utils.ffDesignError:
             pass
 
