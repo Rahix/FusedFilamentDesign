@@ -6,7 +6,8 @@ import ffDesign_Utils as Utils
 
 class HoleWizardTaskPanel:
     def __init__(self, hole):
-        assert hole.TypeId == "PartDesign::Hole"
+        Utils.assert_hole(hole)
+
         self.hole = hole
         self.form = FreeCADGui.PySideUic.loadUi(Utils.Resources.get_panel("ffDesign_HoleWizard.ui"))
 

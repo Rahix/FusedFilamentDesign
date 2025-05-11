@@ -168,4 +168,21 @@ def make_derived_sketch(body, original, suffix: str):
     return sketch
 
 
+def make_sketch_offset_shape_binder(body, template, sketch, suffix: str, center_expr: str, rotation_expr: str):
+    assert_body(body)
+    assert_sketch(template)
+    assert_sketch(sketch)
+
+    shape_binder = body.newObject("PartDesign::SubShapeBinder", sketch.Name + suffix)
+    shape_binder.Support = (template, "")
+    shape_binder.Relative = False
+    shape_binder.Visibility = False
+    shape_binder.setExpression(
+        "Placement",
+        f"{sketch.Name}.Placement * placement({center_expr}; rotation({rotation_expr}; 0; 0))",
+    )
+    shape_binder.Label = sketch.Label + suffix
+    return shape_binder
+
+
 Resources.register_search_paths()
