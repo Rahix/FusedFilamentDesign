@@ -17,11 +17,19 @@ def register_pd_toolbar():
     # all_bars = pd_toolbars.GetGroups()
     # Utils.Log.info(f"All PartDesign Toolbars: {all_bars!r}")
 
+    PD_TOOLBAR_COMMANDS = ["ffDesign_HoleWizard", "ffDesign_ZipTieChannels"]
+
     for tb_name in pd_toolbars.GetGroups():
-        if pd_toolbars.GetGroup(tb_name).GetString("Name") == "FusedFilamentDesign":
+        tb = pd_toolbars.GetGroup(tb_name)
+        if tb.GetString("Name") == "FusedFilamentDesign":
+            # Install any new commands that we now provide into the existing toolbar
+            for cmd in PD_TOOLBAR_COMMANDS:
+                if tb.GetString(cmd) == "":
+                    Utils.Log.info(f"Updating toolbar to include {cmd} as well!")
+                    tb.SetString(cmd, "ffDesign")
             break
     else:
-        Utils.Log.info(f"Registering {Utils.Log.addon} toolbar into PartDesign workbench...")
+        Utils.Log.info(f"Registering toolbar into PartDesign workbench...")
 
         # Create the FusedFilamentDesign toolbar
         ff_toolbar = pd_toolbars.GetGroup("ffDesign")
@@ -29,6 +37,7 @@ def register_pd_toolbar():
 
         # Commands to be added:
         ff_toolbar.SetString("ffDesign_HoleWizard", "ffDesign")
+        ff_toolbar.SetString("ffDesign_ZipTieChannels", "ffDesign")
 
         ff_toolbar.SetBool("Active", 1)
 
