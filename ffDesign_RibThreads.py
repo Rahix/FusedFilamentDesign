@@ -358,7 +358,7 @@ class RibThreadsTaskPanel:
         self.form = Gui.PySideUic.loadUi(Utils.Resources.get_panel("ffDesign_RibThreads.ui"))
 
         self.form.UseGlobalTemplate.setCheckState(QtCore.Qt.CheckState.Checked)
-        self.form.UseGlobalTemplate.checkStateChanged.connect(self.onUseGlobalTemplate)
+        self.form.UseGlobalTemplate.stateChanged.connect(self.onUseGlobalTemplate)
         self.onUseGlobalTemplate()
 
         self.form.ThreadNormative.setText(str(self.hole.ThreadSize))
