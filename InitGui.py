@@ -4,6 +4,7 @@ import FreeCADGui
 import ffDesign_HoleWizard
 import ffDesign_CounterboreBridges
 import ffDesign_RibThreads
+import ffDesign_Teardrop
 
 
 def register_pd_toolbar():

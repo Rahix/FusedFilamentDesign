@@ -25,8 +25,10 @@ class HoleWizardTaskPanel:
         self.form.AddCounterboreBridges.setEnabled(has_counterbore_maybe)
         self.form.AddRibThreads.setEnabled(is_threaded)
 
+        # Teardrop is always available
+        self.form.AddTeardropShape.setEnabled(True)
+
         # TODO: These are not yet implemented, so always disable them for now
-        self.form.AddTeardropShape.setEnabled(False)
         self.form.AddRoofBridge.setEnabled(False)
 
     def addCounterboreBridges(self):
@@ -43,7 +45,7 @@ class HoleWizardTaskPanel:
 
     def addTeardropShape(self):
         FreeCADGui.Control.closeDialog()
-        Utils.Log.error("TODO: Add teardrop shape")
+        FreeCADGui.runCommand("ffDesign_Teardrop")
 
     def accept(self):
         FreeCADGui.Control.closeDialog()
