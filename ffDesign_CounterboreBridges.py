@@ -106,7 +106,7 @@ def make_upside_down_counterbores(body, hole):
     Utils.assert_body(body)
     Utils.assert_hole(hole)
 
-    if not Utils.hole_has_counterbore_sure(hole) or True:
+    if not Utils.hole_has_counterbore_sure(hole):
         Utils.warning_confirm_proceed("Selected Hole does not seem to have a known counterbore type.")
 
     profile_sketch = Utils.get_hole_profile_sketch(hole)
