@@ -201,7 +201,7 @@ def make_sketch_offset_shape_binder(body, template, sketch, suffix: str, center_
     set_shape_binder_styles(shape_binder)
     shape_binder.setExpression(
         "Placement",
-        f"{sketch.Name}.Placement * placement({center_expr}; rotation({rotation_expr}; 0; 0))",
+        f"{sketch.Name}.Placement * placement({center_expr}; {rotation_expr})",
     )
     shape_binder.Label = sketch.Label + suffix
     return shape_binder

@@ -301,7 +301,7 @@ def make_rib_threads(body, hole, global_template: bool, rib_param: RibParameters
             sketch=profile_sketch,
             suffix=f"_RibThread{index + 1:03}",
             center_expr=f"{profile_sketch.Name}.Geometry[{index}].Center",
-            rotation_expr=f"{varset.Name}.Rotation",
+            rotation_expr=f"rotation({varset.Name}.Rotation; 0; 0)",
         )
         shape_binders.append(binder)
 
