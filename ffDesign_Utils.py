@@ -45,9 +45,9 @@ class ffDesignError(Exception):
         super().__init__(message)
 
 
-def warning_confirm_proceed(message: str):
+def warning_confirm_proceed(message: str, question: str = "Proceed anyway?"):
     Log.warning(message)
-    reply = QtGui.QMessageBox.question(None, Log.addon, f"[{Log.addon}] {message}\nProceed anyway?")
+    reply = QtGui.QMessageBox.question(None, Log.addon, f"[{Log.addon}] {message}\n{question}")
     if reply != QtGui.QMessageBox.Yes:
         raise ffDesignError("Aborted on user request due to previous warning", dialog=False)
 
@@ -74,14 +74,26 @@ def check_hole_tool_preconditions() -> bool:
 
 
 def get_active_part_design_body_for_feature(obj):
+    parent_body = obj.getParent()
     active_body = Gui.ActiveDocument.ActiveView.getActiveObject("pdbody")
+
     if active_body is None:
-        raise ffDesignError("No active PartDesign Body")
+        warning_confirm_proceed(
+            "No active PartDesign Body!",
+            f'Make "{parent_body.Label}" active?',
+        )
+        Gui.ActiveDocument.ActiveView.setActiveObject("pdbody", parent_body)
+        active_body = Gui.ActiveDocument.ActiveView.getActiveObject("pdbody")
+
+    if parent_body != active_body:
+        warning_confirm_proceed(
+            "Selected feature is not part of the active PartDesign body!",
+            f'Make "{parent_body.Label}" active?',
+        )
+        Gui.ActiveDocument.ActiveView.setActiveObject("pdbody", parent_body)
+        active_body = Gui.ActiveDocument.ActiveView.getActiveObject("pdbody")
+
     assert_body(active_body)
-
-    if obj.getParent() != active_body:
-        raise ffDesignError("Selected feature is not part of the active PartDesign body!")
-
     return active_body
 
 
