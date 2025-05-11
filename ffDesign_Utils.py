@@ -132,6 +132,16 @@ def hole_has_counterbore_sure(hole) -> bool:
     ]
 
 
+def hole_prepare_layer_height_property(hole):
+    assert_hole(hole)
+
+    if "LayerHeight" not in hole.PropertiesList:
+        hole.addProperty("App::PropertyLength", "LayerHeight", group="FusedFilamentDesign")
+        # TODO: Add some configuration setting for the default layer height
+        hole.LayerHeight = "0.2 mm"
+
+
+
 def get_hole_profile_sketch(hole):
     assert_hole(hole)
 

@@ -133,12 +133,14 @@ def make_upside_down_counterbores(body, hole):
             f"{hole.Name}.Diameter",
         )
 
+    Utils.hole_prepare_layer_height_property(hole)
+
     pocket_bridges_y = body.newObject("PartDesign::Pocket", f"{hole.Name}_BridgesY")
     pocket_bridges_y.Profile = (sketch_bridges_y, "")
     pocket_bridges_y.ReferenceAxis = (sketch_bridges_y, ["N_Axis"])
     pocket_bridges_y.Reversed = hole.Reversed
     sketch_bridges_y.Visibility = False
-    pocket_bridges_y.setExpression("Length", f"{hole.Name}.HoleCutDepth + {LAYER_HEIGHT}")
+    pocket_bridges_y.setExpression("Length", f"{hole.Name}.HoleCutDepth + {hole.Name}.LayerHeight")
     pocket_bridges_y.Label = f"{hole.Label}_BridgesY"
     pocket_bridges_y.recompute()
 
@@ -147,7 +149,7 @@ def make_upside_down_counterbores(body, hole):
     pocket_bridges_x.ReferenceAxis = (sketch_bridges_x, ["N_Axis"])
     pocket_bridges_x.Reversed = hole.Reversed
     sketch_bridges_x.Visibility = False
-    pocket_bridges_x.setExpression("Length", f"{hole.Name}.HoleCutDepth + {LAYER_HEIGHT} * 2")
+    pocket_bridges_x.setExpression("Length", f"{hole.Name}.HoleCutDepth + {hole.Name}.LayerHeight * 2")
     pocket_bridges_x.Label = f"{hole.Label}_BridgesX"
     pocket_bridges_x.recompute()
 
