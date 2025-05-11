@@ -3,10 +3,11 @@ import FreeCADGui
 
 import ffDesign_HoleWizard
 import ffDesign_CounterboreBridges
-import ffDesign_Utils as Utils
 
 
 def register_pd_toolbar():
+    import ffDesign_Utils as Utils
+
     """Register the PrintDesign toolbar in the PartDesign workbench."""
     pd_toolbars = FreeCAD.ParamGet("User parameter:BaseApp/Workbench/PartDesignWorkbench/Toolbar")
     all_bars = pd_toolbars.GetGroups()
@@ -21,10 +22,12 @@ def register_pd_toolbar():
         # Create the FusedFilamentDesign toolbar
         ff_toolbar = pd_toolbars.GetGroup("ffDesign")
         ff_toolbar.SetString("Name", "FusedFilamentDesign")
+
         # Commands to be added:
         ff_toolbar.SetString("ffDesign_HoleWizard", "ffDesign")
-        # ff_toolbar.SetString("Separator1", "Separator")
-        # ff_toolbar.SetString("Part_Boolean", "Part")
+        ff_toolbar.SetString("Separator1", "Separator")
+        ff_toolbar.SetString("ffDesign_CounterboreBridges", "ffDesign")
+
         ff_toolbar.SetBool("Active", 1)
 
 

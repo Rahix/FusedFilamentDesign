@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,30 +15,109 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
-    <widget class="QPushButton" name="AddRibThreads">
+    <widget class="QToolButton" name="AddRibThreads">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Add Rib Threads</string>
+     </property>
+     <property name="icon">
+      <iconset resource="Icons/resource.qrc">
+      <normaloff>:/icons/help-browser.svg</normaloff>:/icons/help-browser.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
      </property>
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QPushButton" name="AddTeardropShape">
+    <widget class="QToolButton" name="AddTeardropShape">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Add Teardrop Shape</string>
+     </property>
+     <property name="icon">
+      <iconset resource="Icons/resource.qrc">
+      <normaloff>:/icons/help-browser.svg</normaloff>:/icons/help-browser.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
      </property>
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QPushButton" name="AddCounterboreBridges">
+    <widget class="QToolButton" name="AddCounterboreBridges">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Add Counterbore Bridges</string>
+     </property>
+     <property name="toolTip">
+      <string>Add bridges to a counterbored hole so that it can be printed upside down.</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>icons:ffDesign_CounterboreBridges.svg</normaloff>icons:ffDesign_CounterboreBridges.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
      </property>
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QPushButton" name="AddRoofBridge">
+    <widget class="QToolButton" name="AddRoofBridge">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Add Roof Bridge</string>
+     </property>
+     <property name="icon">
+      <iconset resource="Icons/resource.qrc">
+      <normaloff>:/icons/help-browser.svg</normaloff>:/icons/help-browser.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
      </property>
     </widget>
    </item>

@@ -54,7 +54,7 @@ class HoleWizardTaskPanel:
 class HoleWizardCommand:
     def GetResources(self):
         return {
-            "Pixmap": Utils.Resources.get_icon("ffDesign_HoleWizard.svg"),
+            "Pixmap": "icons:ffDesign_HoleWizard.svg",
             "MenuText": FreeCAD.Qt.translate("ffDesign", "Hole Wizard"),
             "ToolTip": FreeCAD.Qt.translate(
                 "ffDesign",

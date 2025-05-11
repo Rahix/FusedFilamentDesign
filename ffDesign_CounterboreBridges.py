@@ -8,9 +8,6 @@ import Sketcher
 import ffDesign_Utils as Utils
 
 
-LAYER_HEIGHT = "0.2 mm"
-
-
 def make_parametric_square(sketch, center_expr: str, size_expr: str):
     Utils.assert_sketch(sketch)
 
@@ -157,8 +154,7 @@ def make_upside_down_counterbores(body, hole):
 class CounterboreBridgesCommand:
     def GetResources(self):
         return {
-            # TODO: Update icon
-            "Pixmap": Utils.Resources.get_icon("ffDesign_HoleWizard.svg"),
+            "Pixmap": "icons:ffDesign_CounterboreBridges.svg",
             "MenuText": App.Qt.translate("ffDesign", "Add counterbore bridges"),
             "ToolTip": App.Qt.translate(
                 "ffDesign",

@@ -12,12 +12,12 @@ class Resources:
     panels_path = os.path.join(mod_path, "Resources", "panels")
 
     @classmethod
-    def get_icon(cls, name: str) -> str:
-        return os.path.join(cls.icons_path, name)
-
-    @classmethod
     def get_panel(cls, name: str) -> str:
         return os.path.join(cls.panels_path, name)
+
+    @classmethod
+    def register_search_paths(cls):
+        QtCore.QDir.addSearchPath("icons", cls.icons_path)
 
 
 class Log:
@@ -166,3 +166,6 @@ def make_derived_sketch(body, original, suffix: str):
     sketch.Label = original.Label + suffix
     sketch.recompute()
     return sketch
+
+
+Resources.register_search_paths()
