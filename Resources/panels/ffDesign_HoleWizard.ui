@@ -26,7 +26,10 @@
       <string>Add Thread Forming Ribs</string>
      </property>
      <property name="toolTip">
-      <string>Add ribs to a hole that allow a screw to form its own thread.</string>
+      <string>Add ribs to a hole that allow a screw to form its own thread.
+
+Preconditions:
+- Hole must be threaded.</string>
      </property>
      <property name="icon">
       <iconset>
@@ -53,6 +56,9 @@
      </property>
      <property name="text">
       <string>Add Teardrop Shape</string>
+     </property>
+     <property name="toolTip">
+      <string>This feature is unfortunately not implemented yet :/</string>
      </property>
      <property name="icon">
       <iconset resource="Icons/resource.qrc">
@@ -81,7 +87,10 @@
       <string>Add Counterbore Bridges</string>
      </property>
      <property name="toolTip">
-      <string>Add bridges to a counterbored hole so that it can be printed upside down.</string>
+      <string>Add bridges to a counterbored hole so that it can be printed upside down.
+
+Preconditions:
+- Hole must have a counterbore.</string>
      </property>
      <property name="icon">
       <iconset>
@@ -108,6 +117,9 @@
      </property>
      <property name="text">
       <string>Add Roof Bridge</string>
+     </property>
+     <property name="toolTip">
+      <string>This feature is unfortunately not implemented yet :/</string>
      </property>
      <property name="icon">
       <iconset resource="Icons/resource.qrc">
