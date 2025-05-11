@@ -18,18 +18,10 @@ class HoleWizardTaskPanel:
         self.updateCommandAvailability()
 
     def updateCommandAvailability(self):
-        has_counterbore = self.hole.HoleCutType in [
-            "Counterbore",
-            "ISO 4762",
-            "ISO 14583 (partial)",
-            "DIN 7984",
-            "ISO 4762 + 7089",
-            "ISO 14583",
-            "ISO 12474",
-        ]
+        has_counterbore_maybe = Utils.hole_has_counterbore_maybe(self.hole)
         is_threaded = self.hole.Threaded
 
-        self.form.AddCounterboreBridges.setEnabled(has_counterbore)
+        self.form.AddCounterboreBridges.setEnabled(has_counterbore_maybe)
         self.form.AddRibThreads.setEnabled(is_threaded)
 
     def addCounterboreBridges(self):
@@ -70,10 +62,12 @@ class HoleWizardCommand:
         }
 
     def Activated(self):
-        hole = Utils.get_selected_hole()
-        if hole is not None:
+        try:
+            hole = Utils.get_selected_hole()
             dialog = HoleWizardTaskPanel(hole)
             FreeCADGui.Control.showDialog(dialog)
+        except Utils.ffDesignError:
+            pass
 
     def IsActive(self):
         return Utils.check_hole_tool_preconditions()
