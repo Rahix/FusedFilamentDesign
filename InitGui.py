@@ -11,8 +11,9 @@ def register_pd_toolbar():
 
     """Register the PrintDesign toolbar in the PartDesign workbench."""
     pd_toolbars = FreeCAD.ParamGet("User parameter:BaseApp/Workbench/PartDesignWorkbench/Toolbar")
-    all_bars = pd_toolbars.GetGroups()
-    Utils.Log.info(f"All PartDesign Toolbars: {all_bars!r}")
+
+    # all_bars = pd_toolbars.GetGroups()
+    # Utils.Log.info(f"All PartDesign Toolbars: {all_bars!r}")
 
     for tb_name in pd_toolbars.GetGroups():
         if pd_toolbars.GetGroup(tb_name).GetString("Name") == "FusedFilamentDesign":
