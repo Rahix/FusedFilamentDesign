@@ -1,5 +1,8 @@
-_FusedFilamentDesign_ Addon for FreeCAD
----------------------------------------
+<p align="center">
+  <img src="./Resources/icons/ffDesign_Logo.svg" width="128"/> 
+</p>
+<h2 align="center"><i>FusedFilamentDesign</i> — FreeCAD Addon</h2>
+
 This is a [FreeCAD PartDesign][fc-partdesign] addon for FFF/FDM 3D-printing design.  It includes various tools to generate geometry for better printability of a part.
 
 ![A demo screenshot of the Hole Wizard in action](./Resources/splash.png)
