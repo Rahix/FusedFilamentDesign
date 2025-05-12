@@ -124,7 +124,10 @@ def make_zip_tie_channel(body, original, template, settings, suffix: str, center
 def find_points_in_sketch(sketch):
     Utils.assert_sketch(sketch)
 
-    return list(index for index, point in enumerate(sketch.Geometry) if point.TypeId == "Part::GeomPoint")
+    def is_valid_point(index, point):
+        return point.TypeId == "Part::GeomPoint" and not sketch.getConstruction(index)
+
+    return list(index for index, point in enumerate(sketch.Geometry) if is_valid_point(index, point))
 
 
 def make_zip_tie_channels_from_sketch(
