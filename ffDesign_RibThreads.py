@@ -305,12 +305,16 @@ def make_rib_threads(body, hole, global_template: bool, rib_param: RibParameters
         )
         shape_binders.append(binder)
 
-    # Create merged shape-binder
-    merged_binder = body.newObject("PartDesign::SubShapeBinder", f"{hole.Name}_RibThreads")
-    merged_binder.Support = [(b, "") for b in shape_binders]
-    merged_binder.Relative = True
-    Utils.set_shape_binder_styles(merged_binder)
-    merged_binder.recompute()
+    if len(shape_binders) == 1:
+        merged_binder = shape_binders[0]
+    else:
+        # When we have more than one shape binder, we first have to merge them
+        # all before we can make a pocket from them.
+        merged_binder = body.newObject("PartDesign::SubShapeBinder", f"{hole.Name}_RibThreads")
+        merged_binder.Support = [(b, "") for b in shape_binders]
+        merged_binder.Relative = True
+        Utils.set_shape_binder_styles(merged_binder)
+        merged_binder.recompute()
 
     pocket_ribs = body.newObject("PartDesign::Pocket", f"{hole.Name}_ThreadRibs")
     pocket_ribs.Profile = (merged_binder, "")
