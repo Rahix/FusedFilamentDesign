@@ -231,4 +231,24 @@ def make_sketch_offset_shape_binder(body, template, sketch, suffix: str, center_
     return shape_binder
 
 
+class ffDesignAboutCommand:
+    def GetResources(self):
+        return {
+            "Pixmap": "icons:ffDesign_Logo.svg",
+            "MenuText": App.Qt.translate("ffDesign", "FusedFilamentDesign"),
+            "ToolTip": App.Qt.translate("ffDesign", "About the FusedFilamentDesign addon."),
+        }
+
+    def Activated(self):
+        QtGui.QMessageBox.information(
+            None,
+            Log.addon,
+            "FusedFilamentDesign is a FreeCAD addon for FFF/FDM 3D-printing design. "
+            "It includes various tools to generate geometry for better printability of a part.\n"
+            "\n"
+            "Check the tooltip for each command to understand how to use them.",
+        )
+
+
 Resources.register_search_paths()
+Gui.addCommand("ffDesign_About", ffDesignAboutCommand())
