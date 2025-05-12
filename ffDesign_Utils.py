@@ -204,6 +204,15 @@ def make_derived_sketch(body, original, suffix: str):
     return sketch
 
 
+def get_sketch_circle_indices(sketch):
+    assert_sketch(sketch)
+
+    def is_valid_circle(index, obj):
+        return obj.TypeId == "Part::GeomCircle" and not sketch.getConstruction(index)
+
+    return [i for i, obj in enumerate(sketch.Geometry) if is_valid_circle(i, obj)]
+
+
 def set_shape_binder_styles(binder):
     binder.ViewObject.LineColor = (1.0, 0.84, 0.0, 0.60)
     binder.ViewObject.PointColor = (1.0, 0.84, 0.0, 0.60)

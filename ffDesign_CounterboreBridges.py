@@ -111,10 +111,7 @@ def make_upside_down_counterbores(body, hole):
     sketch_bridges_y = Utils.make_derived_sketch(body, profile_sketch, "_BridgesY")
     sketch_bridges_x = Utils.make_derived_sketch(body, profile_sketch, "_BridgesX")
 
-    for index, circle in enumerate(profile_sketch.Geometry):
-        if circle.TypeId != "Part::GeomCircle":
-            continue
-
+    for index in Utils.get_sketch_circle_indices(profile_sketch):
         # Create parametric y bridges cutout for this circle
         make_parametric_y_cutout(
             sketch_bridges_y,

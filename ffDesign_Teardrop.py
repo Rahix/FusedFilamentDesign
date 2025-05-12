@@ -74,10 +74,7 @@ def make_teardrops(body, hole, angle: App.Units.Quantity, rotation: App.Units.Qu
     profile_sketch = Utils.get_hole_profile_sketch(hole)
     teardrop_sketch = Utils.make_derived_sketch(body, profile_sketch, "_Teardrops")
 
-    for index, circle in enumerate(profile_sketch.Geometry):
-        if circle.TypeId != "Part::GeomCircle":
-            continue
-
+    for index in Utils.get_sketch_circle_indices(profile_sketch):
         make_parametric_teardrop(
             teardrop_sketch,
             center_expr=f"{profile_sketch.Name}.Geometry[{index}].Center",

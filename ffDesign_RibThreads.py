@@ -285,10 +285,7 @@ def make_rib_threads(body, hole, global_template: bool, rib_param: RibParameters
     sketch_entrance = Utils.make_derived_sketch(body, profile_sketch, "_ThreadEntrance")
 
     shape_binders = []
-    for index, circle in enumerate(profile_sketch.Geometry):
-        if circle.TypeId != "Part::GeomCircle":
-            continue
-
+    for index in Utils.get_sketch_circle_indices(profile_sketch):
         make_parametric_circle(
             sketch_entrance,
             f"{profile_sketch.Name}.Geometry[{index}].Center",
