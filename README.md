@@ -4,17 +4,21 @@ This is a [FreeCAD PartDesign][fc-partdesign] addon for FFF/FDM 3D-printing desi
 
 ![A demo screenshot of the Hole Wizard in action](./Resources/splash.png)
 
+## Installation
+This addon is not yet available via the Addon Manager in FreeCAD. You have to install it manually by following the instructions from [How to install additional workbenches][fc-additional-workbenches].
+
+Linux one-liner:
+```bash
+cd ~/.FreeCAD/Mod && git clone https://github.com/rahix/FusedFilamentDesign
+```
+
 ## Usage
-The addon adds a new toolbar to the [PartDesign][fc-partdesign] workbench where
-the new tools can be accessed.  Check the tooltips for some preliminary usage
-documentation.
+The addon adds a new toolbar to the [PartDesign][fc-partdesign] workbench where the new tools can be accessed.  Check the tooltips for some preliminary usage documentation.
 
 ![Screenshot of the FusedFilamentDesign toolbar](./Resources/toolbar.png)
 
 ## Status
-This addon is still work in progress.  Only a few of the features listed below
-are already implemented.  The ones that are already available can be used
-without worries.
+This addon is still work in progress.  Some of the features listed below are still missing (marked as _planned_).  The ones that are already available can be used without worries.
 
 ## Features
 - <img src="./Resources/icons/ffDesign_HoleWizard.svg" height="12" /> **Hole Wizard** — Various tools for enhancing [PartDesign Hole][fc-hole] features
@@ -33,6 +37,7 @@ This addon is licensed under the `LGPL-2.1-or-later` license.  See [LICENSE](./L
 
 [fc-partdesign]: https://wiki.freecad.org/PartDesign_Workbench
 [fc-hole]: https://wiki.freecad.org/PartDesign_Hole
+[fc-additional-workbenches]: https://wiki.freecad.org/How_to_install_additional_workbenches
 [df3dp-main]: https://blog.rahix.de/design-for-3d-printing/
 [df3dp-counterbore]: https://blog.rahix.de/design-for-3d-printing/#the-overhanging-counterbore-trick
 [df3dp-ribthreads]: https://blog.rahix.de/design-for-3d-printing/#rib-thread-forming
