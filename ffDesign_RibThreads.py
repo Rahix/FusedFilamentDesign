@@ -284,39 +284,61 @@ def make_rib_threads(body, hole, global_template: bool, rib_param: RibParameters
 
     sketch_entrance = Utils.make_derived_sketch(body, profile_sketch, "_ThreadEntrance")
 
-    shape_binders = []
-    for index in Utils.get_sketch_circle_indices(profile_sketch):
+    circles = Utils.get_sketch_circle_indices(profile_sketch)
+    if len(circles) == 1 and not global_template:
+        # In the special case of the Hole only having one circle and we have
+        # generated a local template, we can just move this local template in
+        # place and use it for the pocket directly.
+        center_expr = f"{profile_sketch.Name}.Geometry[{circles[0]}].Center"
+        rotation_expr = f"rotation({varset.Name}.Rotation; 0; 0)"
+        template.setExpression(
+            "Placement",
+            f"{profile_sketch.Name}.Placement * placement({center_expr}; {rotation_expr})",
+        )
+        template.recompute()
+
         make_parametric_circle(
             sketch_entrance,
-            f"{profile_sketch.Name}.Geometry[{index}].Center",
+            f"{profile_sketch.Name}.Geometry[{circles[0]}].Center",
             f"{varset.Name}.EntranceDiameter",
         )
 
-        binder = Utils.make_sketch_offset_shape_binder(
-            body=body,
-            template=template,
-            sketch=profile_sketch,
-            suffix=f"_RibThread{index + 1:03}",
-            center_expr=f"{profile_sketch.Name}.Geometry[{index}].Center",
-            rotation_expr=f"rotation({varset.Name}.Rotation; 0; 0)",
-        )
-        shape_binders.append(binder)
-
-    if len(shape_binders) == 1:
-        merged_binder = shape_binders[0]
+        rib_threads_profile_obj = template
     else:
-        # When we have more than one shape binder, we first have to merge them
-        # all before we can make a pocket from them.
-        merged_binder = body.newObject("PartDesign::SubShapeBinder", f"{hole.Name}_RibThreads")
-        merged_binder.Support = [(b, "") for b in shape_binders]
-        merged_binder.Relative = True
-        Utils.set_shape_binder_styles(merged_binder)
-        merged_binder.recompute()
+        shape_binders = []
+        for index in circles:
+            make_parametric_circle(
+                sketch_entrance,
+                f"{profile_sketch.Name}.Geometry[{index}].Center",
+                f"{varset.Name}.EntranceDiameter",
+            )
+
+            binder = Utils.make_sketch_offset_shape_binder(
+                body=body,
+                template=template,
+                sketch=profile_sketch,
+                suffix=f"_RibThread{index + 1:03}",
+                center_expr=f"{profile_sketch.Name}.Geometry[{index}].Center",
+                rotation_expr=f"rotation({varset.Name}.Rotation; 0; 0)",
+            )
+            shape_binders.append(binder)
+
+        if len(shape_binders) == 1:
+            rib_threads_profile_obj = shape_binders[0]
+        else:
+            # When we have more than one shape binder, we first have to merge them
+            # all before we can make a pocket from them.
+            merged_binder = body.newObject("PartDesign::SubShapeBinder", f"{hole.Name}_RibThreads")
+            merged_binder.Support = [(b, "") for b in shape_binders]
+            merged_binder.Relative = True
+            Utils.set_shape_binder_styles(merged_binder)
+            merged_binder.recompute()
+            rib_threads_profile_obj = merged_binder
 
     pocket_ribs = body.newObject("PartDesign::Pocket", f"{hole.Name}_ThreadRibs")
-    pocket_ribs.Profile = (merged_binder, "")
+    pocket_ribs.Profile = (rib_threads_profile_obj, "")
     pocket_ribs.Reversed = hole.Reversed
-    merged_binder.Visibility = False
+    rib_threads_profile_obj.Visibility = False
     pocket_ribs.setExpression("Type", f"{hole.Name}.DepthType")
     pocket_ribs.setExpression("Length", f"{hole.Name}.Depth")
     pocket_ribs.Label = f"{hole.Label}_ThreadRibs"
