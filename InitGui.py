@@ -52,4 +52,9 @@ def register_pd_toolbar():
         ff_toolbar.SetBool("Active", 1)
 
 
+# Fake workbench class to make the addon manager happy
+class ffDesignWB:
+    pass
+
+
 register_pd_toolbar()
