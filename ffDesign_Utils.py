@@ -13,7 +13,10 @@ class Resources:
 
     @classmethod
     def get_panel(cls, name: str) -> str:
-        return os.path.join(cls.panels_path, name)
+        path = os.path.join(cls.panels_path, name)
+        if not os.path.exists(path):
+            raise ffDesignError(f"Missing task panel {name!r}!")
+        return path
 
     @classmethod
     def register_search_paths(cls):
