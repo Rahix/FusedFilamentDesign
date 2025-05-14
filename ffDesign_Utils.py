@@ -49,6 +49,12 @@ class ffDesignError(Exception):
             QtGui.QMessageBox.warning(None, Log.addon, f"[{Log.addon}] {self.message}")
 
 
+class ffDesignPreconditionError(ffDesignError):
+    """A precondition for using a command was not met."""
+
+    pass
+
+
 def warning_confirm_proceed(message: str, question: str = "Proceed anyway?"):
     Log.warning(message)
     reply = QtGui.QMessageBox.question(None, Log.addon, f"[{Log.addon}] {message}\n{question}")
@@ -70,32 +76,6 @@ def assert_sketch(obj):
 
 def assert_varset(obj):
     assert obj.TypeId == "App::VarSet"
-
-
-def check_hole_tool_preconditions() -> bool:
-    if not App.ActiveDocument:
-        return False
-
-    sel = Gui.Selection.getSelection()
-    if len(sel) == 1:
-        return sel[0].TypeId == "PartDesign::Hole"
-
-    if len(sel) == 0:
-        active_body = Gui.ActiveDocument.ActiveView.getActiveObject("pdbody")
-        if active_body is None or active_body.Tip is None:
-            return False
-        return active_body.Tip.TypeId == "PartDesign::Hole"
-
-    return False
-
-
-def check_sketch_tool_preconditions() -> bool:
-    if not App.ActiveDocument:
-        return False
-    sel = Gui.Selection.getSelection()
-    if len(sel) != 1:
-        return False
-    return sel[0].TypeId == "Sketcher::SketchObject"
 
 
 def get_active_part_design_body_for_feature(obj):
@@ -124,33 +104,54 @@ def get_active_part_design_body_for_feature(obj):
 
 def get_selected_hole():
     if not App.ActiveDocument:
-        raise ffDesignError("No active document")
+        raise ffDesignPreconditionError("No active document")
 
     sel = Gui.Selection.getSelection()
     if len(sel) == 1:
         if sel[0].TypeId != "PartDesign::Hole":
-            raise ffDesignError(f"Selected object is not a PartDesign Hole feature (is a {sel[0].TypeId!r} instead).")
+            raise ffDesignPreconditionError(
+                f"Selected object is not a PartDesign Hole feature (is a {sel[0].TypeId!r} instead)."
+            )
         return sel[0]
 
     active_body = Gui.ActiveDocument.ActiveView.getActiveObject("pdbody")
     if len(sel) == 0 and active_body is not None:
         if active_body.Tip is not None:
             if active_body.Tip.TypeId != "PartDesign::Hole":
-                raise ffDesignError(f"Tip of the active body is not a PartDesign Hole feature.")
+                raise ffDesignPreconditionError(f"Tip of the active body is not a PartDesign Hole feature.")
             return active_body.Tip
 
-    raise ffDesignError("Exactly one Hole feature must be selected.")
+    raise ffDesignPreconditionError("Exactly one Hole feature must be selected.")
+
+
+def check_hole_tool_preconditions() -> bool:
+    try:
+        get_selected_hole()
+        return True
+    except ffDesignPreconditionError:
+        return False
 
 
 def get_selected_sketch():
     if not App.ActiveDocument:
-        raise ffDesignError("No active document")
+        raise ffDesignPreconditionError("No active document")
+
     sel = Gui.Selection.getSelection()
     if len(sel) != 1:
-        raise ffDesignError("Exactly one Sketch must be selected.")
+        raise ffDesignPreconditionError("Exactly one Sketch must be selected.")
+
     if sel[0].TypeId != "Sketcher::SketchObject":
-        raise ffDesignError(f"Selected object is not a Sketch (is a {sel[0].TypeId!r} instead).")
+        raise ffDesignPreconditionError(f"Selected object is not a Sketch (is a {sel[0].TypeId!r} instead).")
+
     return sel[0]
+
+
+def check_sketch_tool_preconditions() -> bool:
+    try:
+        get_selected_sketch()
+        return True
+    except ffDesignPreconditionError:
+        return False
 
 
 def hole_has_counterbore_maybe(hole) -> bool:
