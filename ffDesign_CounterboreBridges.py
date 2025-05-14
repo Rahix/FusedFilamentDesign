@@ -156,8 +156,9 @@ class CounterboreBridgesCommand:
             "ToolTip": App.Qt.translate(
                 "ffDesign",
                 "Add bridges to a counterbored Hole so it can be printed upside down.\n"
-                "1. Select a Hole feature with a counterbore in the active body.\n"
-                "2. Run this command.\n",
+                "1. Select a Hole feature in the active body.\n"
+                "2. The Hole must have a counterbore of some kind.\n"
+                "3. Run this command.\n",
             ),
         }
 
@@ -179,7 +180,11 @@ class CounterboreBridgesCommand:
             e.emit_to_user()
 
     def IsActive(self):
-        return Utils.check_hole_tool_preconditions()
+        try:
+            hole = Utils.get_selected_hole()
+            return Utils.hole_has_counterbore_maybe(hole)
+        except Utils.ffDesignPreconditionError:
+            return False
 
 
 Gui.addCommand("ffDesign_CounterboreBridges", CounterboreBridgesCommand())
