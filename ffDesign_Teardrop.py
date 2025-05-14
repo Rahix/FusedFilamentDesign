@@ -140,7 +140,7 @@ class TeardropCommand:
             "ToolTip": App.Qt.translate(
                 "ffDesign",
                 "Add a teardrop shape to a hole.\n"
-                "1. Select a Hole feature with a counterbore in the active body.\n"
+                "1. Select a Hole feature in the active body.\n"
                 "2. Run this command.\n",
             ),
         }
