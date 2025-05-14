@@ -71,10 +71,18 @@ def assert_varset(obj):
 def check_hole_tool_preconditions() -> bool:
     if not App.ActiveDocument:
         return False
+
     sel = Gui.Selection.getSelection()
-    if len(sel) != 1:
-        return False
-    return sel[0].TypeId == "PartDesign::Hole"
+    if len(sel) == 1:
+        return sel[0].TypeId == "PartDesign::Hole"
+
+    if len(sel) == 0:
+        active_body = Gui.ActiveDocument.ActiveView.getActiveObject("pdbody")
+        if active_body is None or active_body.Tip is None:
+            return False
+        return active_body.Tip.TypeId == "PartDesign::Hole"
+
+    return False
 
 
 def check_sketch_tool_preconditions() -> bool:
@@ -113,12 +121,21 @@ def get_active_part_design_body_for_feature(obj):
 def get_selected_hole():
     if not App.ActiveDocument:
         raise ffDesignError("No active document")
+
     sel = Gui.Selection.getSelection()
-    if len(sel) != 1:
-        raise ffDesignError("Exactly one Hole feature must be selected.")
-    if sel[0].TypeId != "PartDesign::Hole":
-        raise ffDesignError(f"Selected object is not a PartDesign Hole feature (is a {sel[0].TypeId!r} instead).")
-    return sel[0]
+    if len(sel) == 1:
+        if sel[0].TypeId != "PartDesign::Hole":
+            raise ffDesignError(f"Selected object is not a PartDesign Hole feature (is a {sel[0].TypeId!r} instead).")
+        return sel[0]
+
+    active_body = Gui.ActiveDocument.ActiveView.getActiveObject("pdbody")
+    if len(sel) == 0 and active_body is not None:
+        if active_body.Tip is not None:
+            if active_body.Tip.TypeId != "PartDesign::Hole":
+                raise ffDesignError(f"Tip of the active body is not a PartDesign Hole feature.")
+            return active_body.Tip
+
+    raise ffDesignError("Exactly one Hole feature must be selected.")
 
 
 def get_selected_sketch():
