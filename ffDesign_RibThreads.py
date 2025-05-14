@@ -517,8 +517,9 @@ class RibThreadsCommand:
             "ToolTip": App.Qt.translate(
                 "ffDesign",
                 "Add ribs to a hole that allow a screw to form its own thread.\n"
-                "1. Select a Hole feature with a counterbore in the active body.\n"
-                "2. Run this command.\n",
+                "1. Select a Hole feature in the active body.\n"
+                "2. The Hole must be threaded using a standard thread size.\n"
+                "3. Run this command.\n",
             ),
         }
 
@@ -535,7 +536,11 @@ class RibThreadsCommand:
             e.emit_to_user()
 
     def IsActive(self):
-        return Utils.check_hole_tool_preconditions()
+        try:
+            hole = Utils.get_selected_hole()
+            return hole.Threaded
+        except Utils.ffDesignPreconditionError:
+            return False
 
 
 Gui.addCommand("ffDesign_RibThreads", RibThreadsCommand())
