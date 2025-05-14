@@ -191,7 +191,8 @@ class ZipTieChannelsTaskPanel:
                 raise Utils.ffDesignError("Cannot generate zip tie channels: No points were found in the sketch!")
 
             try:
-                App.ActiveDocument.openTransaction("Add zip tie channels")
+                if Utils.undo_shapebinder_is_safe():
+                    App.ActiveDocument.openTransaction("Add zip tie channels")
                 make_zip_tie_channels_from_sketch(
                     self.body,
                     self.sketch,
@@ -200,11 +201,12 @@ class ZipTieChannelsTaskPanel:
                     bridge_dia=self.form.BridgeDiameter.property("value"),
                 )
                 App.ActiveDocument.recompute()
+                if Utils.undo_shapebinder_is_safe():
+                    App.ActiveDocument.commitTransaction()
             except Exception as e:
-                App.ActiveDocument.abortTransaction()
+                if Utils.undo_shapebinder_is_safe():
+                    App.ActiveDocument.abortTransaction()
                 raise e from None
-            else:
-                App.ActiveDocument.commitTransaction()
         except Utils.ffDesignError:
             pass
 

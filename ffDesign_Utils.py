@@ -240,6 +240,19 @@ def make_sketch_offset_shape_binder(body, template, sketch, suffix: str, center_
     return shape_binder
 
 
+def check_freecad_version(*, min_version) -> bool:
+    current = [int(v.split()[0]) for v in App.Version()[:4]]
+    return current >= min_version
+
+
+def undo_shapebinder_is_safe() -> bool:
+    """
+    Undoing transactions where shape-binders are created is broken in FreeCAD
+    1.0 and a fix will be released in 1.1.
+    """
+    return check_freecad_version(min_version=[1, 1, 0])
+
+
 class ffDesignAboutCommand:
     def GetResources(self):
         return {

@@ -474,14 +474,16 @@ class RibThreadsTaskPanel:
             Gui.Control.closeDialog()
 
             try:
-                App.ActiveDocument.openTransaction("Add thread forming ribs")
+                if Utils.undo_shapebinder_is_safe():
+                    App.ActiveDocument.openTransaction("Add thread forming ribs")
                 make_rib_threads(self.body, self.hole, self.global_template, rib_param)
                 App.ActiveDocument.recompute()
+                if Utils.undo_shapebinder_is_safe():
+                    App.ActiveDocument.commitTransaction()
             except Exception as e:
-                App.ActiveDocument.abortTransaction()
+                if Utils.undo_shapebinder_is_safe():
+                    App.ActiveDocument.abortTransaction()
                 raise e from None
-            else:
-                App.ActiveDocument.commitTransaction()
         except Utils.ffDesignError:
             pass
 
