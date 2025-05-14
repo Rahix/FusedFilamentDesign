@@ -28,7 +28,7 @@ This addon is still work in progress.  Some of the features listed below are sti
   * <img src="./Resources/icons/ffDesign_CounterboreBridges.svg" height="12" /> Implementation of the [overhanging counterbore trick][df3dp-counterbore] (**R3.5**)
   * <img src="./Resources/icons/ffDesign_RibThreads.svg" height="12" /> Hole geometry for [rib thread forming][df3dp-ribthreads] (**R5.4**)
   * <img src="./Resources/icons/ffDesign_Teardrop.svg" height="12" /> Teardrop-shaped holes for [better horizontal holes][df3dp-horizontal-holes] and to avoid [seam inaccuracy][df3dp-seam] (**R2.2** & **R2.3**)
-  * _Planned:_ Roof bridges for [horizontal holes][df3dp-horizontal-holes] (**R2.2**)
+  * <img src="./Resources/icons/ffDesign_RoofBridge.svg" height="12" /> Roof bridges for [horizontal holes][df3dp-horizontal-holes] (**R2.2**)
 - <img src="./Resources/icons/ffDesign_ZipTieChannels.svg" height="12" /> **Zip Tie Channels** — Generate parametric [zip tie channels][df3dp-zip-ties] on a part's surface (**R4.1**)
 - _Planned:_ **Seam Groove** — Generate a seam groove to control [where the slicer will place the perimeter seams][df3dp-seam] (**R2.3**)
 - _Planned:_ **Sacrificial Layer** — Generate a [sacrificial layers][df3dp-sacrificial] for some surface with holes (**R3.4**)
