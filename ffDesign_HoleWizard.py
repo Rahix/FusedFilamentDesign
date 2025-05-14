@@ -73,8 +73,8 @@ class HoleWizardCommand:
             hole = Utils.get_selected_hole()
             dialog = HoleWizardTaskPanel(hole)
             FreeCADGui.Control.showDialog(dialog)
-        except Utils.ffDesignError:
-            pass
+        except Utils.ffDesignError as e:
+            e.emit_to_user()
 
     def IsActive(self):
         return Utils.check_hole_tool_preconditions()

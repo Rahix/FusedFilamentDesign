@@ -484,8 +484,8 @@ class RibThreadsTaskPanel:
                 if Utils.undo_shapebinder_is_safe():
                     App.ActiveDocument.abortTransaction()
                 raise e from None
-        except Utils.ffDesignError:
-            pass
+        except Utils.ffDesignError as e:
+            e.emit_to_user()
 
     def reject(self):
         Gui.Control.closeDialog()
@@ -531,8 +531,8 @@ class RibThreadsCommand:
 
             dialog = RibThreadsTaskPanel(body, hole)
             Gui.Control.showDialog(dialog)
-        except Utils.ffDesignError:
-            pass
+        except Utils.ffDesignError as e:
+            e.emit_to_user()
 
     def IsActive(self):
         return Utils.check_hole_tool_preconditions()

@@ -38,11 +38,15 @@ class Log:
 
 class ffDesignError(Exception):
     def __init__(self, message: str, *, dialog: bool = True):
-        Log.error(message)
-        if dialog:
-            # Also show as a modal dialog
-            QtGui.QMessageBox.warning(None, Log.addon, f"[{Log.addon}] {message}")
+        self.message = message
+        self.dialog = dialog
         super().__init__(message)
+
+    def emit_to_user(self):
+        Log.error(self.message)
+        if self.dialog:
+            # Also show as a modal dialog
+            QtGui.QMessageBox.warning(None, Log.addon, f"[{Log.addon}] {self.message}")
 
 
 def warning_confirm_proceed(message: str, question: str = "Proceed anyway?"):

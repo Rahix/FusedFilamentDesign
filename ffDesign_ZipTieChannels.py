@@ -207,8 +207,8 @@ class ZipTieChannelsTaskPanel:
                 if Utils.undo_shapebinder_is_safe():
                     App.ActiveDocument.abortTransaction()
                 raise e from None
-        except Utils.ffDesignError:
-            pass
+        except Utils.ffDesignError as e:
+            e.emit_to_user()
 
     def reject(self):
         Gui.Control.closeDialog()
@@ -234,8 +234,8 @@ class ZipTieChannelsCommand:
 
             dialog = ZipTieChannelsTaskPanel(body, sketch)
             Gui.Control.showDialog(dialog)
-        except Utils.ffDesignError:
-            pass
+        except Utils.ffDesignError as e:
+            e.emit_to_user()
 
     def IsActive(self):
         return Utils.check_sketch_tool_preconditions()

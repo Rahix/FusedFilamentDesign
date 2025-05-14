@@ -175,8 +175,8 @@ class CounterboreBridgesCommand:
                 raise e from None
             else:
                 App.ActiveDocument.commitTransaction()
-        except Utils.ffDesignError:
-            pass
+        except Utils.ffDesignError as e:
+            e.emit_to_user()
 
     def IsActive(self):
         return Utils.check_hole_tool_preconditions()
