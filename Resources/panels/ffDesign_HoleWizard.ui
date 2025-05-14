@@ -119,11 +119,11 @@ Preconditions:
       <string>Add Roof Bridge</string>
      </property>
      <property name="toolTip">
-      <string>This feature is unfortunately not implemented yet :/</string>
+      <string>Add a roof bridge to the hole to avoid a steep overhang at the top.</string>
      </property>
      <property name="icon">
-      <iconset resource="Icons/resource.qrc">
-      <normaloff>:/icons/help-browser.svg</normaloff>:/icons/help-browser.svg</iconset>
+      <iconset>
+       <normaloff>icons:ffDesign_RoofBridge.svg</normaloff>icons:ffDesign_RoofBridge.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
