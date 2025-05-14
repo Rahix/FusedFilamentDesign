@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RoofBridge</class>
+ <widget class="QDialog" name="RoofBridge">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>136</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Roof Bridge</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Bridge Clearance</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="Gui::QuantitySpinBox" name="BridgeClearance" native="true">
+     <property name="unit" stdset="0">
+      <string notr="true">mm</string>
+     </property>
+     <property name="minimum" stdset="0">
+      <double>0.000000000000000</double>
+     </property>
+     <property name="toolTip">
+      <string>Amount of additional clearance to add beneath the bridge to account for filament drooping.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QCheckBox" name="DoCounterbore">
+     <property name="toolTip">
+      <string>Also add a roof bridge to the counterbore of this hole.</string>
+     </property>
+     <property name="text">
+      <string>Add roof bridge to counterbore</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QRadioButton" name="Angle45">
+     <property name="text">
+      <string>45° Overhang Angle</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QRadioButton" name="Angle60">
+     <property name="text">
+      <string>60° Overhang Angle</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
