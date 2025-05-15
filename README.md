@@ -6,7 +6,7 @@ This is a [FreeCAD PartDesign][fc-partdesign] addon for FFF/FDM 3D-printing desi
 ![A demo screenshot of the Hole Wizard in action](./Resources/splash.png)
 
 ## Installation
-This addon is not yet available via the Addon Manager in FreeCAD. You have to install it manually by following the instructions from [How to install additional workbenches][fc-additional-workbenches].
+This addon is available through the [FreeCAD Addon-Manager](https://wiki.freecad.org/Std_AddonMgr).
 
 ## Usage
 The addon adds a new toolbar to the [PartDesign][fc-partdesign] workbench where the new tools can be accessed.  Check the tooltips for some preliminary usage documentation.
