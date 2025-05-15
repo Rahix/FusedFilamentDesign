@@ -2,9 +2,9 @@
 <package format="1" xmlns="https://wiki.freecad.org/Package_Metadata">
   <name>FusedFilamentDesign</name>
   <description>PartDesign addon for FFF/FDM 3D-printing design</description>
-  <!-- We use innovative calender-derived zero-versioning. Read more on 0ver.org and calver.org! -->
-  <version>0.2025.0513</version>
-  <date>2025-05-13</date>
+  <!-- We use innovative calender-derived zero-versioning. See CHANGELOG.md for more info. -->
+  <version>0.25.200</version>
+  <date>0.25.200</date>
   <maintainer email="freecad@rahix.de">rahix</maintainer>
   <license file="LICENSE">LGPL-2.1-or-later</license>
   <url type="repository" branch="release">https://github.com/Rahix/FusedFilamentDesign</url>
