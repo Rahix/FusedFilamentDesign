@@ -9,12 +9,14 @@ This is a [FreeCAD PartDesign][fc-partdesign] addon for FFF/FDM 3D-printing desi
 This addon is available through the [FreeCAD Addon-Manager](https://wiki.freecad.org/Std_AddonMgr).
 
 ## Usage
-The addon adds a new toolbar to the [PartDesign][fc-partdesign] workbench where the new tools can be accessed.  Check the tooltips for some preliminary usage documentation.
+The addon adds a new toolbar to the [PartDesign][fc-partdesign] workbench where the new tools can be accessed.  Check the tooltips for guidance.
 
 ![Screenshot of the FusedFilamentDesign toolbar](./Resources/toolbar.png)
 
-## Status
-This addon is still work in progress.  Some of the features listed below are still missing (marked as _planned_).  The ones that are already available can be used without worries.
+All tools in this addon generate parametric PartDesign features.  You do not need to have FusedFilamentDesign installed to edit parts that were made with it.
+
+## Documentation
+To find out more about using the tools included in this addon, please check the [`Documentation/`](./Documentation/README.md) subdirectory.
 
 ## Features
 | | | Command | Description |
