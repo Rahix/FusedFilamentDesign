@@ -14,22 +14,125 @@
    <string>Hole Wizard</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <widget class="QToolButton" name="AddRibThreads">
+   <item row="3" column="1">
+    <widget class="QToolButton" name="AddRoofBridge">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Add a roof bridge to the hole to avoid a steep overhang at the top.</string>
+     </property>
      <property name="text">
-      <string>Add Thread Forming Ribs</string>
+      <string>Add Roof Bridge</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>icons:ffDesign_RoofBridge.svg</normaloff>icons:ffDesign_RoofBridge.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QToolButton" name="AddTeardropShape">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Add a teardrop shape to a hole.</string>
+     </property>
+     <property name="text">
+      <string>Add Teardrop Shape</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>icons:ffDesign_Teardrop.svg</normaloff>icons:ffDesign_Teardrop.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="1">
+    <widget class="QToolButton" name="AddCounterboreBridges">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Add bridges to a counterbored hole so that it can be printed upside down.
+
+Preconditions:
+- Hole must have a counterbore.</string>
+     </property>
+     <property name="text">
+      <string>Add Counterbore Bridges</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>icons:ffDesign_CounterboreBridges.svg</normaloff>icons:ffDesign_CounterboreBridges.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QToolButton" name="AddRibThreads">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="toolTip">
       <string>Add ribs to a hole that allow a screw to form its own thread.
 
 Preconditions:
 - Hole must be threaded.</string>
+     </property>
+     <property name="text">
+      <string>Add Thread Forming Ribs</string>
      </property>
      <property name="icon">
       <iconset>
@@ -47,94 +150,17 @@ Preconditions:
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QToolButton" name="AddTeardropShape">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
-     <property name="text">
-      <string>Add Teardrop Shape</string>
-     </property>
-     <property name="toolTip">
-      <string>Add a teardrop shape to a hole.</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>icons:ffDesign_Teardrop.svg</normaloff>icons:ffDesign_Teardrop.svg</iconset>
-     </property>
-     <property name="iconSize">
+     <property name="sizeHint" stdset="0">
       <size>
-       <width>32</width>
-       <height>32</height>
+       <width>40</width>
+       <height>20</height>
       </size>
      </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QToolButton" name="AddCounterboreBridges">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Add Counterbore Bridges</string>
-     </property>
-     <property name="toolTip">
-      <string>Add bridges to a counterbored hole so that it can be printed upside down.
-
-Preconditions:
-- Hole must have a counterbore.</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>icons:ffDesign_CounterboreBridges.svg</normaloff>icons:ffDesign_CounterboreBridges.svg</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>32</width>
-       <height>32</height>
-      </size>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QToolButton" name="AddRoofBridge">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Add Roof Bridge</string>
-     </property>
-     <property name="toolTip">
-      <string>Add a roof bridge to the hole to avoid a steep overhang at the top.</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>icons:ffDesign_RoofBridge.svg</normaloff>icons:ffDesign_RoofBridge.svg</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>32</width>
-       <height>32</height>
-      </size>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
-     </property>
-    </widget>
+    </spacer>
    </item>
   </layout>
  </widget>
