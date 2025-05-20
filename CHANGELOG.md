@@ -10,6 +10,8 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+### Fixed
+- Fixed the layout of the buttons in the _Hole Wizard_, making them more consistent.
 
 
 ## [0.25.200] - 2025-05-15
