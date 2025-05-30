@@ -265,8 +265,15 @@ def make_sketch_offset_shape_binder(body, template, sketch, suffix: str, center_
     return shape_binder
 
 
+def int_or_zero(string) -> int:
+    try:
+        return int(string)
+    except ValueError:
+        return 0
+
+
 def check_freecad_version(*, min_version) -> bool:
-    current = [int(v.split()[0]) for v in App.Version()[:4]]
+    current = [int_or_zero(v.split()[0]) for v in App.Version()[:4]]
     return current >= min_version
 
 
