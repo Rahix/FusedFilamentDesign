@@ -10,6 +10,9 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+
+
+## [0.25.220] - 2025-05-30
 ### Fixed
 - Fixed the layout of the buttons in the _Hole Wizard_, making them more consistent.
 - Fixed `check_freecad_version()` failing on FreeCAD versions that have an
@@ -19,5 +22,6 @@ and this project adheres to
 ## [0.25.200] - 2025-05-15
 Initial release 🎉
 
-[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.200...HEAD
+[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.220...HEAD
+[0.25.220]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.200...v0.25.200
 [0.25.200]: https://github.com/rahix/FusedFilamentDesign/releases/tag/v0.25.200
