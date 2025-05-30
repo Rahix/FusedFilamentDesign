@@ -12,6 +12,8 @@ and this project adheres to
 ## [Unreleased]
 ### Fixed
 - Fixed the layout of the buttons in the _Hole Wizard_, making them more consistent.
+- Fixed `check_freecad_version()` failing on FreeCAD versions that have an
+  `Unknown` git version (Gentoo for example).
 
 
 ## [0.25.200] - 2025-05-15
