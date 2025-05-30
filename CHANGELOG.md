@@ -23,5 +23,5 @@ and this project adheres to
 Initial release 🎉
 
 [Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.220...HEAD
-[0.25.220]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.200...v0.25.200
+[0.25.220]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.200...v0.25.220
 [0.25.200]: https://github.com/rahix/FusedFilamentDesign/releases/tag/v0.25.200
