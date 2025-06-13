@@ -267,24 +267,24 @@ def get_sketch_locations(sketch, profile_type):
                 y_expr = f"{sketch.Name}.Geometry[{index}].Y"
                 return LocationExprSet(
                     vector_expr=f"vector({x_expr}, {y_expr}, 0)",
-                    x_expr=x_expr,
-                    y_expr=y_expr,
+                    x_expr=f"{x_expr} * 1mm",
+                    y_expr=f"{y_expr} * 1mm",
                 )
         if (profile_type & MASK_PROFILE_CIRCLES) != 0:
             if obj.TypeId == "Part::GeomCircle":
                 center = f"{sketch.Name}.Geometry[{index}].Center"
                 return LocationExprSet(
                     vector_expr=center,
-                    x_expr=f"{center}.x",
-                    y_expr=f"{center}.y",
+                    x_expr=f"{center}.x * 1mm",
+                    y_expr=f"{center}.y * 1mm",
                 )
         if (profile_type & MASK_PROFILE_ARCS) != 0:
             if obj.TypeId == "Part::GeomArcOfCircle":
                 center = f"{sketch.Name}.Geometry[{index}].Center"
                 return LocationExprSet(
                     vector_expr=center,
-                    x_expr=f"{center}.x",
-                    y_expr=f"{center}.y",
+                    x_expr=f"{center}.x * 1mm",
+                    y_expr=f"{center}.y * 1mm",
                 )
 
         return None

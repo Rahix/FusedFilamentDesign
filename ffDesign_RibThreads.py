@@ -67,8 +67,8 @@ def make_parametric_circle(sketch, hole_loc: Utils.LocationExprSet, size_expr: s
         Sketcher.Constraint("Diameter", last_geo_id + 0, 2),
     ]
     sketch.addConstraint(new_constraints)
-    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{hole_loc.x_expr} * 1mm")
-    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{hole_loc.y_expr} * 1mm")
+    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{hole_loc.x_expr}")
+    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{hole_loc.y_expr}")
     sketch.setExpression(f"Constraints[{last_c + 2}]", f"{size_expr}")
     sketch.recompute()
 

@@ -38,10 +38,10 @@ def make_parametric_square(sketch, hole_loc: Utils.LocationExprSet, size_expr: s
         Sketcher.Constraint("DistanceY", last_geo_id + 2, 1, -1),
     ]
     sketch.addConstraint(new_constraints)
-    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{hole_loc.x_expr} * 1mm - {size_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{hole_loc.y_expr} * 1mm + {size_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 2}]", f"{hole_loc.x_expr} * 1mm + {size_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 3}]", f"{hole_loc.y_expr} * 1mm - {size_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{hole_loc.x_expr} - {size_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{hole_loc.y_expr} + {size_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 2}]", f"{hole_loc.x_expr} + {size_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 3}]", f"{hole_loc.y_expr} - {size_expr} / 2")
     sketch.recompute()
 
 
@@ -86,14 +86,14 @@ def make_parametric_y_cutout(sketch, hole_loc: Utils.LocationExprSet, size_inner
     ]
     sketch.addConstraint(new_constraints)
     y_offset_expr = f"sqrt(({size_outer_expr} / 2)^2 - ({size_inner_expr} / 2)^2)"
-    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{hole_loc.x_expr} * 1mm + {size_inner_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{hole_loc.x_expr} * 1mm - {size_inner_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 2}]", f"{hole_loc.x_expr} * 1mm - {size_inner_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 3}]", f"{hole_loc.x_expr} * 1mm + {size_inner_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 4}]", f"{hole_loc.y_expr} * 1mm + {y_offset_expr}")
-    sketch.setExpression(f"Constraints[{last_c + 5}]", f"{hole_loc.y_expr} * 1mm + {y_offset_expr}")
-    sketch.setExpression(f"Constraints[{last_c + 6}]", f"{hole_loc.y_expr} * 1mm - {y_offset_expr}")
-    sketch.setExpression(f"Constraints[{last_c + 7}]", f"{hole_loc.y_expr} * 1mm - {y_offset_expr}")
+    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{hole_loc.x_expr} + {size_inner_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{hole_loc.x_expr} - {size_inner_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 2}]", f"{hole_loc.x_expr} - {size_inner_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 3}]", f"{hole_loc.x_expr} + {size_inner_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 4}]", f"{hole_loc.y_expr} + {y_offset_expr}")
+    sketch.setExpression(f"Constraints[{last_c + 5}]", f"{hole_loc.y_expr} + {y_offset_expr}")
+    sketch.setExpression(f"Constraints[{last_c + 6}]", f"{hole_loc.y_expr} - {y_offset_expr}")
+    sketch.setExpression(f"Constraints[{last_c + 7}]", f"{hole_loc.y_expr} - {y_offset_expr}")
     sketch.setExpression(f"Constraints[{last_c + 8}]", f"{hole_loc.y_expr}")
     sketch.setExpression(f"Constraints[{last_c + 9}]", f"{hole_loc.y_expr}")
     sketch.recompute()

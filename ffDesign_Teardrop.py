@@ -47,8 +47,8 @@ def make_parametric_teardrop(
         Sketcher.Constraint("Angle", last_geo_id + 3, math.pi / 2),
     ]
     sketch.addConstraint(new_constraints)
-    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{hole_loc.x_expr} * 1mm")
-    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{hole_loc.y_expr} * 1mm")
+    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{hole_loc.x_expr}")
+    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{hole_loc.y_expr}")
     sketch.setExpression(f"Constraints[{last_c + 2}]", f"{diameter_expr}")
     sketch.setExpression(f"Constraints[{last_c + 3}]", f"{angle_expr}")
     sketch.setExpression(f"Constraints[{last_c + 4}]", f"{rotation_expr}")
