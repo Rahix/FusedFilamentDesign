@@ -11,7 +11,13 @@ import ffDesign_Utils as Utils
 
 
 def make_parametric_roof_bridge(
-    sketch, *, center_expr: str, diameter_expr: str, angle_expr: str, rotation_expr: str, clearance_expr: str
+    sketch,
+    *,
+    hole_loc: Utils.LocationExprSet,
+    diameter_expr: str,
+    angle_expr: str,
+    rotation_expr: str,
+    clearance_expr: str,
 ):
     Utils.assert_sketch(sketch)
 
@@ -51,8 +57,8 @@ def make_parametric_roof_bridge(
         Sketcher.Constraint("Distance", last_geo_id + 3, 1, last_geo_id + 3, 2, 2),
     ]
     sketch.addConstraint(new_constraints)
-    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{center_expr}.x * 1mm")
-    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{center_expr}.y * 1mm")
+    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{hole_loc.x_expr} * 1mm")
+    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{hole_loc.y_expr} * 1mm")
     sketch.setExpression(f"Constraints[{last_c + 2}]", f"{diameter_expr}")
     sketch.setExpression(f"Constraints[{last_c + 3}]", f"{angle_expr} * 2")
     sketch.setExpression(f"Constraints[{last_c + 4}]", f"{rotation_expr}")
@@ -95,10 +101,11 @@ def make_roof_bridges(
     profile_sketch = Utils.get_hole_profile_sketch(hole)
     roofbridge_sketch = Utils.make_derived_sketch(body, profile_sketch, "_RoofBridge")
 
-    for index in Utils.get_sketch_circle_indices(profile_sketch):
+    hole_locations = Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole))
+    for hole_loc in hole_locations:
         make_parametric_roof_bridge(
             roofbridge_sketch,
-            center_expr=f"{profile_sketch.Name}.Geometry[{index}].Center",
+            hole_loc=hole_loc,
             diameter_expr=f"{hole.Name}.Diameter",
             angle_expr=f"{hole.Name}.RoofBridgeOverhangAngle",
             rotation_expr=f"{hole.Name}.RoofBridgeRotation",
@@ -120,10 +127,10 @@ def make_roof_bridges(
 
     roofbridge_cb_sketch = Utils.make_derived_sketch(body, profile_sketch, "_RoofBridgeCb")
 
-    for index in Utils.get_sketch_circle_indices(profile_sketch):
+    for hole_loc in hole_locations:
         make_parametric_roof_bridge(
             roofbridge_cb_sketch,
-            center_expr=f"{profile_sketch.Name}.Geometry[{index}].Center",
+            hole_loc=hole_loc,
             diameter_expr=f"{hole.Name}.HoleCutDiameter",
             angle_expr=f"{hole.Name}.RoofBridgeOverhangAngle",
             rotation_expr=f"{hole.Name}.RoofBridgeRotation",

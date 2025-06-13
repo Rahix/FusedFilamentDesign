@@ -1,4 +1,5 @@
 import os
+import dataclasses
 
 from PySide import QtCore, QtGui
 
@@ -229,13 +230,66 @@ def make_derived_sketch(body, original, suffix: str):
     return sketch
 
 
-def get_sketch_circle_indices(sketch):
+# The `BaseProfileType` property introduced for `PartDesign_Hole` in
+# FreeCAD 1.1 is a mask of the sketch features to be used.  Any combination of
+# the following bit-flags may be used.
+MASK_PROFILE_POINTS = 1
+MASK_PROFILE_CIRCLES = 2
+MASK_PROFILE_ARCS = 4
+
+
+def get_hole_profile_type(hole):
+    assert_hole(hole)
+
+    # In older FreeCAD versions where `BaseProfileType` did not exist, the
+    # `PartDesign_Hole` feature only used circles.
+    return getattr(hole, "BaseProfileType", MASK_PROFILE_CIRCLES)
+
+
+@dataclasses.dataclass
+class LocationExprSet:
+    vector_expr: str
+    x_expr: str
+    y_expr: str
+
+
+def get_sketch_locations(sketch, profile_type):
     assert_sketch(sketch)
 
-    def is_valid_circle(index, obj):
-        return obj.TypeId == "Part::GeomCircle" and not sketch.getConstruction(index)
+    def try_make_loc_expr_set(index, obj):
+        # Construction geometry is always ignored
+        if sketch.getConstruction(index):
+            return None
 
-    return [i for i, obj in enumerate(sketch.Geometry) if is_valid_circle(i, obj)]
+        if (profile_type & MASK_PROFILE_POINTS) != 0:
+            if obj.TypeId == "Part::GeomPoint":
+                x_expr = f"{sketch.Name}.Geometry[{index}].X"
+                y_expr = f"{sketch.Name}.Geometry[{index}].Y"
+                return LocationExprSet(
+                    vector_expr=f"vector({x_expr}, {y_expr}, 0)",
+                    x_expr=x_expr,
+                    y_expr=y_expr,
+                )
+        if (profile_type & MASK_PROFILE_CIRCLES) != 0:
+            if obj.TypeId == "Part::GeomCircle":
+                center = f"{sketch.Name}.Geometry[{index}].Center"
+                return LocationExprSet(
+                    vector_expr=center,
+                    x_expr=f"{center}.x",
+                    y_expr=f"{center}.y",
+                )
+        if (profile_type & MASK_PROFILE_ARCS) != 0:
+            if obj.TypeId == "Part::GeomArcOfCircle":
+                center = f"{sketch.Name}.Geometry[{index}].Center"
+                return LocationExprSet(
+                    vector_expr=center,
+                    x_expr=f"{center}.x",
+                    y_expr=f"{center}.y",
+                )
+
+        return None
+
+    return [h for h in (try_make_loc_expr_set(i, obj) for i, obj in enumerate(sketch.Geometry)) if h is not None]
 
 
 def set_shape_binder_styles(binder):
@@ -247,7 +301,7 @@ def set_shape_binder_styles(binder):
     binder.ViewObject.Transparency = 60
 
 
-def make_sketch_offset_shape_binder(body, template, sketch, suffix: str, center_expr: str, rotation_expr: str):
+def make_sketch_offset_shape_binder(body, template, sketch, suffix: str, location: LocationExprSet, rotation_expr: str):
     assert_body(body)
     assert_sketch(template)
     assert_sketch(sketch)
@@ -259,7 +313,7 @@ def make_sketch_offset_shape_binder(body, template, sketch, suffix: str, center_
     set_shape_binder_styles(shape_binder)
     shape_binder.setExpression(
         "Placement",
-        f"{sketch.Name}.Placement * placement({center_expr}; {rotation_expr})",
+        f"{sketch.Name}.Placement * placement({location.vector_expr}; {rotation_expr})",
     )
     shape_binder.Label = sketch.Label + suffix
     return shape_binder

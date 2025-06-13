@@ -97,7 +97,7 @@ def make_zip_tie_channel_template(
     return sketch
 
 
-def make_zip_tie_channel(body, original, template, settings, suffix: str, center_expr: str):
+def make_zip_tie_channel(body, original, template, settings, suffix: str, location: Utils.LocationExprSet):
     Utils.assert_body(body)
     Utils.assert_sketch(original)
     Utils.assert_sketch(template)
@@ -108,7 +108,7 @@ def make_zip_tie_channel(body, original, template, settings, suffix: str, center
         template,
         sketch=original,
         suffix=suffix + "_Binder",
-        center_expr=center_expr,
+        location=location,
         rotation_expr=f"rotation({settings.Name}.ChannelRotation; 0; 90 deg)",
     )
 
@@ -144,14 +144,14 @@ def make_zip_tie_channels_from_sketch(
     settings = make_zip_tie_channel_settings(body, sketch, width=width)
     template = make_zip_tie_channel_template(body, sketch, thickness=thickness, bridge_dia=bridge_dia)
 
-    for point_idx in find_points_in_sketch(sketch):
+    for i, loc in enumerate(Utils.get_sketch_locations(sketch, Utils.MASK_PROFILE_POINTS)):
         make_zip_tie_channel(
             body,
             sketch,
             template,
             settings,
-            suffix=f"_ZipTieChannel{point_idx+1:03}",
-            center_expr=f"vector({sketch.Name}.Geometry[{point_idx}].X; {sketch.Name}.Geometry[{point_idx}].Y; 0)",
+            suffix=f"_ZipTieChannel{i+1:03}",
+            location=loc,
         )
 
     sketch.Visibility = False

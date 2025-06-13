@@ -52,7 +52,7 @@ RIB_PARAMETERS["M6x1"] = RIB_PARAMETERS["M6"]
 RIB_PARAMETERS["M8x1.25"] = RIB_PARAMETERS["M8"]
 
 
-def make_parametric_circle(sketch, center_expr: str, size_expr: str):
+def make_parametric_circle(sketch, hole_loc: Utils.LocationExprSet, size_expr: str):
     Utils.assert_sketch(sketch)
 
     last_geo_id = len(sketch.Geometry)
@@ -67,8 +67,8 @@ def make_parametric_circle(sketch, center_expr: str, size_expr: str):
         Sketcher.Constraint("Diameter", last_geo_id + 0, 2),
     ]
     sketch.addConstraint(new_constraints)
-    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{center_expr}.x * 1mm")
-    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{center_expr}.y * 1mm")
+    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{hole_loc.x_expr} * 1mm")
+    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{hole_loc.y_expr} * 1mm")
     sketch.setExpression(f"Constraints[{last_c + 2}]", f"{size_expr}")
     sketch.recompute()
 
@@ -284,32 +284,31 @@ def make_rib_threads(body, hole, global_template: bool, rib_param: RibParameters
 
     sketch_entrance = Utils.make_derived_sketch(body, profile_sketch, "_ThreadEntrance")
 
-    circles = Utils.get_sketch_circle_indices(profile_sketch)
+    circles = Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole))
     if len(circles) == 1 and not global_template:
         # In the special case of the Hole only having one circle and we have
         # generated a local template, we can just move this local template in
         # place and use it for the pocket directly.
-        center_expr = f"{profile_sketch.Name}.Geometry[{circles[0]}].Center"
         rotation_expr = f"rotation({varset.Name}.Rotation; 0; 0)"
         template.setExpression(
             "Placement",
-            f"{profile_sketch.Name}.Placement * placement({center_expr}; {rotation_expr})",
+            f"{profile_sketch.Name}.Placement * placement({circles[0].vector_expr}; {rotation_expr})",
         )
         template.recompute()
 
         make_parametric_circle(
             sketch_entrance,
-            f"{profile_sketch.Name}.Geometry[{circles[0]}].Center",
+            circles[0],
             f"{varset.Name}.EntranceDiameter",
         )
 
         rib_threads_profile_obj = template
     else:
         shape_binders = []
-        for index in circles:
+        for i, hole_loc in enumerate(circles):
             make_parametric_circle(
                 sketch_entrance,
-                f"{profile_sketch.Name}.Geometry[{index}].Center",
+                hole_loc,
                 f"{varset.Name}.EntranceDiameter",
             )
 
@@ -317,8 +316,8 @@ def make_rib_threads(body, hole, global_template: bool, rib_param: RibParameters
                 body=body,
                 template=template,
                 sketch=profile_sketch,
-                suffix=f"_RibThread{index + 1:03}",
-                center_expr=f"{profile_sketch.Name}.Geometry[{index}].Center",
+                suffix=f"_RibThread{i + 1:03}",
+                location=hole_loc,
                 rotation_expr=f"rotation({varset.Name}.Rotation; 0; 0)",
             )
             shape_binders.append(binder)

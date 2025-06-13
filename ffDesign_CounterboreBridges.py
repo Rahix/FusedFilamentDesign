@@ -8,7 +8,7 @@ import Sketcher
 import ffDesign_Utils as Utils
 
 
-def make_parametric_square(sketch, center_expr: str, size_expr: str):
+def make_parametric_square(sketch, hole_loc: Utils.LocationExprSet, size_expr: str):
     Utils.assert_sketch(sketch)
 
     last_geo_id = len(sketch.Geometry)
@@ -38,14 +38,14 @@ def make_parametric_square(sketch, center_expr: str, size_expr: str):
         Sketcher.Constraint("DistanceY", last_geo_id + 2, 1, -1),
     ]
     sketch.addConstraint(new_constraints)
-    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{center_expr}.x * 1mm - {size_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{center_expr}.y * 1mm + {size_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 2}]", f"{center_expr}.x * 1mm + {size_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 3}]", f"{center_expr}.y * 1mm - {size_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{hole_loc.x_expr} * 1mm - {size_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{hole_loc.y_expr} * 1mm + {size_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 2}]", f"{hole_loc.x_expr} * 1mm + {size_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 3}]", f"{hole_loc.y_expr} * 1mm - {size_expr} / 2")
     sketch.recompute()
 
 
-def make_parametric_y_cutout(sketch, center_expr: str, size_inner_expr: str, size_outer_expr: str):
+def make_parametric_y_cutout(sketch, hole_loc: Utils.LocationExprSet, size_inner_expr: str, size_outer_expr: str):
     Utils.assert_sketch(sketch)
 
     last_geo_id = len(sketch.Geometry)
@@ -86,16 +86,16 @@ def make_parametric_y_cutout(sketch, center_expr: str, size_inner_expr: str, siz
     ]
     sketch.addConstraint(new_constraints)
     y_offset_expr = f"sqrt(({size_outer_expr} / 2)^2 - ({size_inner_expr} / 2)^2)"
-    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{center_expr}.x * 1mm + {size_inner_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{center_expr}.x * 1mm - {size_inner_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 2}]", f"{center_expr}.x * 1mm - {size_inner_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 3}]", f"{center_expr}.x * 1mm + {size_inner_expr} / 2")
-    sketch.setExpression(f"Constraints[{last_c + 4}]", f"{center_expr}.y * 1mm + {y_offset_expr}")
-    sketch.setExpression(f"Constraints[{last_c + 5}]", f"{center_expr}.y * 1mm + {y_offset_expr}")
-    sketch.setExpression(f"Constraints[{last_c + 6}]", f"{center_expr}.y * 1mm - {y_offset_expr}")
-    sketch.setExpression(f"Constraints[{last_c + 7}]", f"{center_expr}.y * 1mm - {y_offset_expr}")
-    sketch.setExpression(f"Constraints[{last_c + 8}]", f"{center_expr}.y")
-    sketch.setExpression(f"Constraints[{last_c + 9}]", f"{center_expr}.y")
+    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{hole_loc.x_expr} * 1mm + {size_inner_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{hole_loc.x_expr} * 1mm - {size_inner_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 2}]", f"{hole_loc.x_expr} * 1mm - {size_inner_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 3}]", f"{hole_loc.x_expr} * 1mm + {size_inner_expr} / 2")
+    sketch.setExpression(f"Constraints[{last_c + 4}]", f"{hole_loc.y_expr} * 1mm + {y_offset_expr}")
+    sketch.setExpression(f"Constraints[{last_c + 5}]", f"{hole_loc.y_expr} * 1mm + {y_offset_expr}")
+    sketch.setExpression(f"Constraints[{last_c + 6}]", f"{hole_loc.y_expr} * 1mm - {y_offset_expr}")
+    sketch.setExpression(f"Constraints[{last_c + 7}]", f"{hole_loc.y_expr} * 1mm - {y_offset_expr}")
+    sketch.setExpression(f"Constraints[{last_c + 8}]", f"{hole_loc.y_expr}")
+    sketch.setExpression(f"Constraints[{last_c + 9}]", f"{hole_loc.y_expr}")
     sketch.recompute()
 
 
@@ -111,11 +111,11 @@ def make_upside_down_counterbores(body, hole):
     sketch_bridges_y = Utils.make_derived_sketch(body, profile_sketch, "_BridgesY")
     sketch_bridges_x = Utils.make_derived_sketch(body, profile_sketch, "_BridgesX")
 
-    for index in Utils.get_sketch_circle_indices(profile_sketch):
+    for hole_loc in Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole)):
         # Create parametric y bridges cutout for this circle
         make_parametric_y_cutout(
             sketch_bridges_y,
-            f"{profile_sketch.Name}.Geometry[{index}].Center",
+            hole_loc,
             f"{hole.Name}.Diameter",
             f"{hole.Name}.HoleCutDiameter",
         )
@@ -123,7 +123,7 @@ def make_upside_down_counterbores(body, hole):
         # Create parametric x bridges cutout for this circle
         make_parametric_square(
             sketch_bridges_x,
-            f"{profile_sketch.Name}.Geometry[{index}].Center",
+            hole_loc,
             f"{hole.Name}.Diameter",
         )
 

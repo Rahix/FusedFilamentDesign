@@ -10,7 +10,9 @@ import Sketcher
 import ffDesign_Utils as Utils
 
 
-def make_parametric_teardrop(sketch, *, center_expr: str, diameter_expr: str, angle_expr: str, rotation_expr: str):
+def make_parametric_teardrop(
+    sketch, *, hole_loc: Utils.LocationExprSet, diameter_expr: str, angle_expr: str, rotation_expr: str
+):
     Utils.assert_sketch(sketch)
 
     last_geo_id = len(sketch.Geometry)
@@ -45,8 +47,8 @@ def make_parametric_teardrop(sketch, *, center_expr: str, diameter_expr: str, an
         Sketcher.Constraint("Angle", last_geo_id + 3, math.pi / 2),
     ]
     sketch.addConstraint(new_constraints)
-    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{center_expr}.x * 1mm")
-    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{center_expr}.y * 1mm")
+    sketch.setExpression(f"Constraints[{last_c + 0}]", f"{hole_loc.x_expr} * 1mm")
+    sketch.setExpression(f"Constraints[{last_c + 1}]", f"{hole_loc.y_expr} * 1mm")
     sketch.setExpression(f"Constraints[{last_c + 2}]", f"{diameter_expr}")
     sketch.setExpression(f"Constraints[{last_c + 3}]", f"{angle_expr}")
     sketch.setExpression(f"Constraints[{last_c + 4}]", f"{rotation_expr}")
@@ -74,10 +76,10 @@ def make_teardrops(body, hole, angle: App.Units.Quantity, rotation: App.Units.Qu
     profile_sketch = Utils.get_hole_profile_sketch(hole)
     teardrop_sketch = Utils.make_derived_sketch(body, profile_sketch, "_Teardrops")
 
-    for index in Utils.get_sketch_circle_indices(profile_sketch):
+    for hole_loc in Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole)):
         make_parametric_teardrop(
             teardrop_sketch,
-            center_expr=f"{profile_sketch.Name}.Geometry[{index}].Center",
+            hole_loc=hole_loc,
             diameter_expr=f"{hole.Name}.Diameter",
             angle_expr=f"{hole.Name}.TeardropAngle",
             rotation_expr=f"{hole.Name}.TeardropRotation",
