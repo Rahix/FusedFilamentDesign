@@ -10,6 +10,9 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+### Fixed
+- Fixed the tools from the _Hole Wizard_ not using points and arcs in FreeCAD
+  1.1, when the Hole feature's `Base Profile Type` was set to such a value.
 
 
 ## [0.25.220] - 2025-05-30
