@@ -10,6 +10,9 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+
+
+## [0.25.250] - 2025-06-17
 ### Fixed
 - Fixed the tools from the _Hole Wizard_ not using points and arcs in FreeCAD
   1.1, when the Hole feature's `Base Profile Type` was set to such a value.
@@ -25,6 +28,7 @@ and this project adheres to
 ## [0.25.200] - 2025-05-15
 Initial release 🎉
 
-[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.220...HEAD
+[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.250...HEAD
+[0.25.250]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.220...v0.25.250
 [0.25.220]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.200...v0.25.220
 [0.25.200]: https://github.com/rahix/FusedFilamentDesign/releases/tag/v0.25.200
