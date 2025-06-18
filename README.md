@@ -32,6 +32,9 @@ To find out more about using the tools included in this addon, please check the 
 
 (The **R#.#** numbers reference the rules from my [Design for 3D-Printing][df3dp-main] guide)
 
+## Changelog
+To follow updates of this addon, please check the [Releases Page](https://github.com/Rahix/FusedFilamentDesign/releases) or the [CHANGELOG](./CHANGELOG.md) file.
+
 ## License
 This addon is licensed under the `LGPL-2.1-or-later` license.  See [LICENSE](./LICENSE) for more info.
 
