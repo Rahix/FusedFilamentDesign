@@ -27,6 +27,7 @@ To find out more about using the tools included in this addon, please check the 
 | | ![ffDesign_Teardrop](./Resources/icons/ffDesign_Teardrop.svg) | **Teardrop Shape** | Teardrop-shaped holes for [better horizontal holes][df3dp-horizontal-holes] and to avoid [seam inaccuracy][df3dp-seam] (**R2.2** & **R2.3**) |
 | | ![ffDesign_RoofBridge](./Resources/icons/ffDesign_RoofBridge.svg) | **Roof Bridge** | Roof bridges for [horizontal holes][df3dp-horizontal-holes] (**R2.2**) |
 | ![ffDesign_ZipTieChannels](./Resources/icons/ffDesign_ZipTieChannels.svg) | | **Zip Tie Channels** | Generate parametric [zip tie channels][df3dp-zip-ties] on a part's surface (**R4.1**) |
+| ![ffDesign_AutoFillet](./Resources/icons/ffDesign_AutoFillet.svg) | | **Auto Fillet** | Automatically add [fillets on all vertical edges][df3dp-vertical-fillets] of a part. (**R2.1**) |
 | _Planned_ | | **Seam Groove** | Generate a seam groove to control [where the slicer will place the perimeter seams][df3dp-seam] (**R2.3**)|
 | _Planned_ | | **Sacrificial Layer** | Generate a [sacrificial layers][df3dp-sacrificial] for some surface with holes (**R3.4**) |
 
@@ -48,3 +49,4 @@ This addon is licensed under the `LGPL-2.1-or-later` license.  See [LICENSE](./L
 [df3dp-seam]: https://blog.rahix.de/design-for-3d-printing/#seemingly-seamless
 [df3dp-sacrificial]: https://blog.rahix.de/design-for-3d-printing/#sacrificial-layers
 [df3dp-zip-ties]: https://blog.rahix.de/design-for-3d-printing/#zip-tie-channels
+[df3dp-vertical-fillets]: https://blog.rahix.de/design-for-3d-printing/#chamfers-vs-fillets
