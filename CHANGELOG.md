@@ -10,6 +10,11 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+### Added
+- Added the `ffDesign_AutoFillet` command to automatically create fillets on
+  all vertical edges of a part ([#30]).
+
+[#30]: https://github.com/rahix/FusedFilamentDesign/pull/30
 
 
 ## [0.25.250] - 2025-06-17
