@@ -3,8 +3,8 @@
   <name>FusedFilamentDesign</name>
   <description>PartDesign addon for FFF/FDM 3D-printing design</description>
   <!-- We use innovative calender-derived zero-versioning. See CHANGELOG.md for more info. -->
-  <version>0.25.250</version>
-  <date>2025-06-17</date>
+  <version>0.25.350</version>
+  <date>2025-08-30</date>
   <maintainer email="freecad@rahix.de">rahix</maintainer>
   <license file="LICENSE">LGPL-2.1-or-later</license>
   <url type="repository" branch="release">https://github.com/Rahix/FusedFilamentDesign</url>

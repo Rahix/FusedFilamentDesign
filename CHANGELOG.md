@@ -10,6 +10,9 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+
+
+## [0.25.350] - 2025-08-30
 ### Added
 - Added the `ffDesign_AutoFillet` command to automatically create fillets on
   all vertical edges of a part ([#30]).
@@ -33,7 +36,8 @@ and this project adheres to
 ## [0.25.200] - 2025-05-15
 Initial release 🎉
 
-[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.250...HEAD
+[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.350...HEAD
+[0.25.350]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.250...v0.25.350
 [0.25.250]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.220...v0.25.250
 [0.25.220]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.200...v0.25.220
 [0.25.200]: https://github.com/rahix/FusedFilamentDesign/releases/tag/v0.25.200
