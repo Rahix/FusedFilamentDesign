@@ -10,6 +10,10 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+### Changed
+- Optimized the default rib-thread parameters for M3 threads ([`81fa0e89311b`]).
+
+[`81fa0e89311b`]: https://github.com/rahix/FusedFilamentDesign/commit/81fa0e89311b4497c465ada053637e44326a0a50
 
 
 ## [0.25.350] - 2025-08-30
