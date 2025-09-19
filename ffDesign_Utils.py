@@ -339,6 +339,18 @@ def undo_shapebinder_is_safe() -> bool:
     return check_freecad_version(min_version=[1, 1, 0])
 
 
+def set_pocket_two_lengths(pocket):
+    try:
+        # In more recent versions, a two-length pocket is created using `SideType`
+        # See https://github.com/FreeCAD/FreeCAD/pull/21794
+        pocket.SideType = "Two sides"
+        pocket.Type = "Length"
+        pocket.Type2 = "Length"
+    except AttributeError:
+        # Legacy code for FreeCAD 1.0 and early 1.1 development builds
+        pocket.Type = "TwoLengths"
+
+
 class ffDesignAboutCommand:
     def GetResources(self):
         return {

@@ -353,7 +353,7 @@ def make_rib_threads(body, hole, global_template: bool, rib_param: RibParameters
     pocket_entrance.Profile = (sketch_entrance, "")
     pocket_entrance.ReferenceAxis = (sketch_entrance, ["N_Axis"])
     pocket_entrance.Reversed = hole.Reversed
-    pocket_entrance.Type = "TwoLengths"
+    Utils.set_pocket_two_lengths(pocket_entrance)
     pocket_entrance.TaperAngle = "-20 deg"
     sketch_entrance.Visibility = False
     # 2.8 is roughly the tan(90 - 20 deg), so the taper will be complete
