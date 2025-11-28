@@ -10,6 +10,9 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+
+
+## [0.25.480] - 2025-11-28
 ### Fixed
 - Fixed zip-tie channels being off center from the supporting sketch on the
   latest FreeCAD 1.1 development builds ([#36]).
@@ -52,7 +55,8 @@ and this project adheres to
 ## [0.25.200] - 2025-05-15
 Initial release 🎉
 
-[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.380...HEAD
+[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.480...HEAD
+[0.25.480]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.380...v0.25.480
 [0.25.380]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.350...v0.25.380
 [0.25.350]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.250...v0.25.350
 [0.25.250]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.220...v0.25.250
