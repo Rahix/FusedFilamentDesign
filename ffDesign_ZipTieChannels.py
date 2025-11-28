@@ -114,7 +114,7 @@ def make_zip_tie_channel(body, original, template, settings, suffix: str, locati
 
     pocket = body.newObject("PartDesign::Pocket", original.Name + suffix)
     pocket.Profile = (binder, "")
-    pocket.Midplane = True
+    Utils.set_pocket_symmetric(pocket)
     binder.Visibility = False
     pocket.setExpression("Length", f"{settings.Name}.ChannelWidth")
     pocket.Label = original.Label + suffix

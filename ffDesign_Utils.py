@@ -351,6 +351,16 @@ def set_pocket_two_lengths(pocket):
         pocket.Type = "TwoLengths"
 
 
+def set_pocket_symmetric(pocket):
+    try:
+        # In more recent versions, a symmetric pocket is created using `SideType`
+        # See https://github.com/FreeCAD/FreeCAD/pull/21794
+        pocket.SideType = "Symmetric"
+    except AttributeError:
+        # Legacy code for FreeCAD 1.0 and early 1.1 development builds
+        pocket.Midplane = True
+
+
 class ffDesignAboutCommand:
     def GetResources(self):
         return {
