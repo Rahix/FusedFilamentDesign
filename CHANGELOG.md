@@ -10,6 +10,10 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+### Added
+- Added rib thread parameters for 1/4-20 UNC thread ([#37]).
+
+[#37]: https://github.com/rahix/FusedFilamentDesign/pull/37
 
 
 ## [0.25.480] - 2025-11-28
