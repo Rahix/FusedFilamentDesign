@@ -42,6 +42,9 @@ RIB_PARAMETERS = {
         "M6": RibParameters(name="M6", normative=6, core_diameter=4.77, core_bore=5.0, entrance_depth=1.2, outer_diameter=6.4, rib_engagement=0.5, rib_diameter=2.2),
         "M8": RibParameters(name="M8", normative=8, core_diameter=6.47, core_bore=6.8, entrance_depth=1.4, outer_diameter=8.5, rib_engagement=0.5, rib_diameter=2.6),
     },
+    "UNC": {
+        "1/4": RibParameters(name="1/4-20", normative=6.35, core_diameter=4.975, core_bore=5.1, entrance_depth=1.2, outer_diameter=7.15, rib_engagement=0.6, rib_diameter=2.2),
+    },
 }
 # fmt: on
 
