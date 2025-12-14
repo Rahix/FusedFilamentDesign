@@ -35,21 +35,23 @@ class RibParameters:
 
 # fmt: off
 RIB_PARAMETERS = {
-    "M3": RibParameters(name="M3", normative=3, core_diameter=2.39, core_bore=2.5, entrance_depth=0.6, outer_diameter=3.4, rib_engagement=0.2, rib_diameter=10.),
-    "M4": RibParameters(name="M4", normative=4, core_diameter=3.14, core_bore=3.3, entrance_depth=0.8, outer_diameter=4.4, rib_engagement=0.3, rib_diameter=1.6),
-    "M5": RibParameters(name="M5", normative=5, core_diameter=4.02, core_bore=4.2, entrance_depth=1.0, outer_diameter=5.4, rib_engagement=0.4, rib_diameter=2.0),
-    "M6": RibParameters(name="M6", normative=6, core_diameter=4.77, core_bore=5.0, entrance_depth=1.2, outer_diameter=6.4, rib_engagement=0.5, rib_diameter=2.2),
-    "M8": RibParameters(name="M8", normative=8, core_diameter=6.47, core_bore=6.8, entrance_depth=1.4, outer_diameter=8.5, rib_engagement=0.5, rib_diameter=2.6),
+    "ISOMetricProfile": {
+        "M3": RibParameters(name="M3", normative=3, core_diameter=2.39, core_bore=2.5, entrance_depth=0.6, outer_diameter=3.4, rib_engagement=0.2, rib_diameter=10.),
+        "M4": RibParameters(name="M4", normative=4, core_diameter=3.14, core_bore=3.3, entrance_depth=0.8, outer_diameter=4.4, rib_engagement=0.3, rib_diameter=1.6),
+        "M5": RibParameters(name="M5", normative=5, core_diameter=4.02, core_bore=4.2, entrance_depth=1.0, outer_diameter=5.4, rib_engagement=0.4, rib_diameter=2.0),
+        "M6": RibParameters(name="M6", normative=6, core_diameter=4.77, core_bore=5.0, entrance_depth=1.2, outer_diameter=6.4, rib_engagement=0.5, rib_diameter=2.2),
+        "M8": RibParameters(name="M8", normative=8, core_diameter=6.47, core_bore=6.8, entrance_depth=1.4, outer_diameter=8.5, rib_engagement=0.5, rib_diameter=2.6),
+    },
 }
 # fmt: on
 
 # Aliases for newer FreeCAD versions
-RIB_PARAMETERS["M3x0.5"] = RIB_PARAMETERS["M3"]
-RIB_PARAMETERS["M4x0.7"] = RIB_PARAMETERS["M4"]
-RIB_PARAMETERS["M5x0.8"] = RIB_PARAMETERS["M5"]
-RIB_PARAMETERS["M6x1.0"] = RIB_PARAMETERS["M6"]
-RIB_PARAMETERS["M6x1"] = RIB_PARAMETERS["M6"]
-RIB_PARAMETERS["M8x1.25"] = RIB_PARAMETERS["M8"]
+RIB_PARAMETERS["ISOMetricProfile"]["M3x0.5"] = RIB_PARAMETERS["ISOMetricProfile"]["M3"]
+RIB_PARAMETERS["ISOMetricProfile"]["M4x0.7"] = RIB_PARAMETERS["ISOMetricProfile"]["M4"]
+RIB_PARAMETERS["ISOMetricProfile"]["M5x0.8"] = RIB_PARAMETERS["ISOMetricProfile"]["M5"]
+RIB_PARAMETERS["ISOMetricProfile"]["M6x1.0"] = RIB_PARAMETERS["ISOMetricProfile"]["M6"]
+RIB_PARAMETERS["ISOMetricProfile"]["M6x1"] = RIB_PARAMETERS["ISOMetricProfile"]["M6"]
+RIB_PARAMETERS["ISOMetricProfile"]["M8x1.25"] = RIB_PARAMETERS["ISOMetricProfile"]["M8"]
 
 
 def make_parametric_circle(sketch, hole_loc: Utils.LocationExprSet, size_expr: str):
@@ -381,8 +383,8 @@ class RibThreadsTaskPanel:
         self.form.ThreadNormative.setText(str(self.hole.ThreadSize))
         self.form.ThreadNormative.setEnabled(False)
 
-        if self.hole.ThreadSize in RIB_PARAMETERS:
-            rib_param = RIB_PARAMETERS[self.hole.ThreadSize]
+        try:
+            rib_param = RIB_PARAMETERS[self.hole.ThreadType][self.hole.ThreadSize]
 
             self.form.ThreadCore.setProperty("rawValue", rib_param.core_bore)
             self.form.ThreadCore.setEnabled(False)
@@ -391,7 +393,7 @@ class RibThreadsTaskPanel:
             self.form.OuterDiameter.setProperty("rawValue", rib_param.outer_diameter)
             self.form.RibEngagement.setProperty("rawValue", rib_param.rib_engagement)
             self.form.RibDiameter.setProperty("rawValue", rib_param.rib_diameter)
-        else:
+        except KeyError:  # No predefined parameters for this thread
             self.form.ThreadCore.setProperty("rawValue", hole.Diameter)
 
     def onUseGlobalTemplate(self):
@@ -435,15 +437,17 @@ class RibThreadsTaskPanel:
             self.form.InfoMessage.setText(f'<font color="#008000">Creating new template...</font>')
 
     def build_rib_parameters(self):
-        if self.hole.ThreadSize in RIB_PARAMETERS:
+        try:
+            rib_param_predefined = RIB_PARAMETERS[self.hole.ThreadType][self.hole.ThreadSize]
+
             rib_param = dataclasses.replace(
-                RIB_PARAMETERS[self.hole.ThreadSize],
+                rib_param_predefined,
                 entrance_depth=self.form.EntranceDepth.property("rawValue"),
                 outer_diameter=self.form.OuterDiameter.property("rawValue"),
                 rib_engagement=self.form.RibEngagement.property("rawValue"),
                 rib_diameter=self.form.RibDiameter.property("rawValue"),
             )
-        else:
+        except KeyError:  # No predefined rib parameters for this thread type
             # Pull the normative diameter from the thread size string
             normative_diameter = float(self.hole.ThreadSize[1:].split("x", 1)[0])
 
