@@ -396,6 +396,12 @@ class RibThreadsTaskPanel:
         except KeyError:  # No predefined parameters for this thread
             self.form.ThreadCore.setProperty("rawValue", hole.Diameter)
 
+            if not self.hole.ThreadType.startswith("ISOMetric"):
+                raise Utils.ffDesignError(
+                    f"Cannot derive parameters for thread {self.hole.ThreadSize} of type {self.hole.ThreadType} at the "
+                    + f"moment. Please reach out to the {Utils.Log.addon} authors!"
+                )
+
     def onUseGlobalTemplate(self):
         self.global_template = self.form.UseGlobalTemplate.checkState() == QtCore.Qt.CheckState.Checked
         self.updateTemplatePresence()
@@ -449,7 +455,13 @@ class RibThreadsTaskPanel:
             )
         except KeyError:  # No predefined rib parameters for this thread type
             # Pull the normative diameter from the thread size string
-            normative_diameter = float(self.hole.ThreadSize[1:].split("x", 1)[0])
+            if self.hole.ThreadType.startswith("ISOMetric"):
+                normative_diameter = float(self.hole.ThreadSize[1:].split("x", 1)[0])
+            else:
+                raise Utils.ffDesignError(
+                    f"Cannot derive parameters for thread {self.hole.ThreadSize} of type {self.hole.ThreadType} at the "
+                    + f"moment. Please reach out to the {Utils.Log.addon} authors!"
+                )
 
             rib_param = RibParameters(
                 name=self.hole.ThreadSize,
