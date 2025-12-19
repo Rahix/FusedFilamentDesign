@@ -10,6 +10,9 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+
+
+## [0.25.510] - 2025-12-19
 ### Added
 - Added rib thread parameters for 1/4-20 UNC thread ([#37]).
 
@@ -59,7 +62,8 @@ and this project adheres to
 ## [0.25.200] - 2025-05-15
 Initial release 🎉
 
-[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.480...HEAD
+[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.510...HEAD
+[0.25.510]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.480...v0.25.510
 [0.25.480]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.380...v0.25.480
 [0.25.380]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.350...v0.25.380
 [0.25.350]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.250...v0.25.350
