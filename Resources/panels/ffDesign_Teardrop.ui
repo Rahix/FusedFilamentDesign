@@ -28,6 +28,16 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="QCheckBox" name="DoCounterbore">
+    <property name="toolTip">
+      <string>Also add a Teardrop shape to the counterbore of this hole.</string>
+    </property>
+    <property name="text">
+      <string>Add Teardrop shape to counterbore</string>
+    </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>
