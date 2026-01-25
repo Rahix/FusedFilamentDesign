@@ -11,7 +11,12 @@ import ffDesign_Utils as Utils
 
 
 def make_parametric_teardrop(
-    sketch, *, hole_loc: Utils.LocationExprSet, diameter_expr: str, angle_expr: str, rotation_expr: str
+    sketch,
+    *,
+    hole_loc: Utils.LocationExprSet,
+    diameter_expr: str,
+    angle_expr: str,
+    rotation_expr: str,
 ):
     Utils.assert_sketch(sketch)
 
@@ -43,7 +48,9 @@ def make_parametric_teardrop(
         Sketcher.Constraint("DistanceX", last_geo_id + 0, 3, 0),
         Sketcher.Constraint("DistanceY", last_geo_id + 0, 3, 0),
         Sketcher.Constraint("Diameter", last_geo_id + 0, 2),
-        Sketcher.Constraint("Angle", last_geo_id + 1, 2, last_geo_id + 2, 2, math.pi / 2),
+        Sketcher.Constraint(
+            "Angle", last_geo_id + 1, 2, last_geo_id + 2, 2, math.pi / 2
+        ),
         Sketcher.Constraint("Angle", last_geo_id + 3, math.pi / 2),
     ]
     sketch.addConstraint(new_constraints)
@@ -56,7 +63,14 @@ def make_parametric_teardrop(
     sketch.recompute()
 
 
-def make_teardrops(body, hole, angle: App.Units.Quantity, rotation: App.Units.Quantity):
+def make_teardrops(
+    body,
+    hole,
+    *,
+    angle: App.Units.Quantity,
+    rotation: App.Units.Quantity,
+    do_counterbore: bool = False,
+):
     Utils.assert_body(body)
     Utils.assert_hole(hole)
 
@@ -66,17 +80,24 @@ def make_teardrops(body, hole, angle: App.Units.Quantity, rotation: App.Units.Qu
     assert rotation.Unit.Type == "Angle"
 
     if "TeardropAngle" not in hole.PropertiesList:
-        hole.addProperty("App::PropertyAngle", "TeardropAngle", group="FusedFilamentDesign")
+        hole.addProperty(
+            "App::PropertyAngle", "TeardropAngle", group="FusedFilamentDesign"
+        )
     hole.TeardropAngle = angle
 
     if "TeardropRotation" not in hole.PropertiesList:
-        hole.addProperty("App::PropertyAngle", "TeardropRotation", group="FusedFilamentDesign")
+        hole.addProperty(
+            "App::PropertyAngle", "TeardropRotation", group="FusedFilamentDesign"
+        )
     hole.TeardropRotation = rotation
 
     profile_sketch = Utils.get_hole_profile_sketch(hole)
     teardrop_sketch = Utils.make_derived_sketch(body, profile_sketch, "_Teardrops")
 
-    for hole_loc in Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole)):
+    hole_locations = Utils.get_sketch_locations(
+        profile_sketch, Utils.get_hole_profile_type(hole)
+    )
+    for hole_loc in hole_locations:
         make_parametric_teardrop(
             teardrop_sketch,
             hole_loc=hole_loc,
@@ -95,6 +116,30 @@ def make_teardrops(body, hole, angle: App.Units.Quantity, rotation: App.Units.Qu
     pocket.Label = f"{hole.Label}_Teardrops"
     pocket.recompute()
 
+    if not do_counterbore or not Utils.hole_has_counterbore_maybe(hole):
+        return
+    teardrops_cb_sketch = Utils.make_derived_sketch(
+        body, profile_sketch, "_TeardropsCb"
+    )
+
+    for hole_loc in hole_locations:
+        make_parametric_teardrop(
+            teardrops_cb_sketch,
+            hole_loc=hole_loc,
+            diameter_expr=f"{hole.Name}.HoleCutDiameter",
+            angle_expr=f"{hole.Name}.TeardropAngle",
+            rotation_expr=f"{hole.Name}.TeardropRotation",
+        )
+
+    pocket = body.newObject("PartDesign::Pocket", f"{hole.Name}_TeardropsCb")
+    pocket.Profile = (teardrops_cb_sketch, "")
+    pocket.ReferenceAxis = (teardrops_cb_sketch, ["N_Axis"])
+    pocket.Reversed = hole.Reversed
+    teardrops_cb_sketch.Visibility = False
+    pocket.setExpression("Length", f"{hole.Name}.HoleCutDepth")
+    pocket.Label = f"{hole.Label}_TeardropsCb"
+    pocket.recompute()
+
 
 class TeardropTaskPanel:
     def __init__(self, body, hole):
@@ -103,7 +148,9 @@ class TeardropTaskPanel:
 
         self.body = body
         self.hole = hole
-        self.form = Gui.PySideUic.loadUi(Utils.Resources.get_panel("ffDesign_Teardrop.ui"))
+        self.form = Gui.PySideUic.loadUi(
+            Utils.Resources.get_panel("ffDesign_Teardrop.ui")
+        )
 
         # Default is 120° teardrop angle
         self.form.Angle120.toggle()
@@ -116,11 +163,21 @@ class TeardropTaskPanel:
             elif self.form.Angle120.isChecked():
                 angle = "120 deg"
 
+            do_counterbore = (
+                self.form.DoCounterbore.checkState() == QtCore.Qt.CheckState.Checked
+            )
+
             Gui.Control.closeDialog()
 
             try:
                 App.ActiveDocument.openTransaction("Add teardrop hole")
-                make_teardrops(self.body, self.hole, angle=angle, rotation="90 deg")
+                make_teardrops(
+                    self.body,
+                    self.hole,
+                    angle=angle,
+                    rotation="90 deg",
+                    do_counterbore=do_counterbore,
+                )
                 App.ActiveDocument.recompute()
             except Exception as e:
                 App.ActiveDocument.abortTransaction()
