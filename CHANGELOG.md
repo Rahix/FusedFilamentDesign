@@ -10,6 +10,10 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+### Added
+- Teardrop holes can now optionally also create a teardrop for a counterbore ([#40]).
+
+[#40]: https://github.com/rahix/FusedFilamentDesign/pull/40
 
 
 ## [0.25.510] - 2025-12-19
