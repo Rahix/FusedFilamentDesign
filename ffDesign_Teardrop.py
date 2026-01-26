@@ -118,6 +118,7 @@ def make_teardrops(
 
     if not do_counterbore or not Utils.hole_has_counterbore_maybe(hole):
         return
+
     teardrops_cb_sketch = Utils.make_derived_sketch(
         body, profile_sketch, "_TeardropsCb"
     )
