@@ -35,7 +35,6 @@ def make_auto_fillets(
     filtered_edges = []
     for idx, edge in enumerate(tip.Shape.Edges, start=1):
         param = edge.ParameterRange
-        Utils.Log.info(f"Parameter range for Edge{idx}: {param!r}")
         tangent_start = edge.tangentAt(param[0])
         tangent_mid = edge.tangentAt((param[0] + param[1]) / 2)
         tangent_end = edge.tangentAt(param[1])
