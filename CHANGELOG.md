@@ -14,9 +14,12 @@ and this project adheres to
 - Teardrop holes can now optionally also create a teardrop for a counterbore ([#40]).
 - Teardrop holes can now optionally be double-sided ([#41]).  This is useful to
   make parts more independent of print orientation.
+- Roof bridges can now optionally be double-sided ([#42]).  This is useful to
+  make parts more independent of print orientation.
 
 [#40]: https://github.com/rahix/FusedFilamentDesign/pull/40
 [#41]: https://github.com/rahix/FusedFilamentDesign/pull/41
+[#42]: https://github.com/rahix/FusedFilamentDesign/pull/42
 
 
 ## [0.25.510] - 2025-12-19
