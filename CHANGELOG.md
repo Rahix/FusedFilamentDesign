@@ -10,6 +10,9 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+
+
+## [0.26.100] - 2026-03-06
 ### Added
 - Teardrop holes can now optionally also create a teardrop for a counterbore ([#40]).
 - Teardrop holes can now optionally be double-sided ([#41]).  This is useful to
@@ -72,7 +75,8 @@ and this project adheres to
 ## [0.25.200] - 2025-05-15
 Initial release 🎉
 
-[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.510...HEAD
+[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.26.100...HEAD
+[0.26.100]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.510...v0.26.100
 [0.25.510]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.480...v0.25.510
 [0.25.480]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.380...v0.25.480
 [0.25.380]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.350...v0.25.380
