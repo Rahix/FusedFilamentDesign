@@ -74,6 +74,7 @@ def make_roof_bridges(
     angle: App.Units.Quantity,
     rotation: App.Units.Quantity,
     do_counterbore: bool,
+    do_doublesided: bool,
     bridge_clearance: App.Units.Quantity,
 ):
     Utils.assert_body(body)
@@ -100,6 +101,9 @@ def make_roof_bridges(
 
     profile_sketch = Utils.get_hole_profile_sketch(hole)
     roofbridge_sketch = Utils.make_derived_sketch(body, profile_sketch, "_RoofBridge")
+    roofbridge_sketch_other_side = None
+    if do_doublesided:
+        roofbridge_sketch_other_side = Utils.make_derived_sketch(body, profile_sketch, "_RoofBridge2")
 
     hole_locations = Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole))
     for hole_loc in hole_locations:
@@ -111,6 +115,15 @@ def make_roof_bridges(
             rotation_expr=f"{hole.Name}.RoofBridgeRotation",
             clearance_expr=f"{hole.Name}.RoofBridgeClearance",
         )
+        if roofbridge_sketch_other_side is not None:
+            make_parametric_roof_bridge(
+                roofbridge_sketch_other_side,
+                hole_loc=hole_loc,
+                diameter_expr=f"{hole.Name}.Diameter",
+                angle_expr=f"{hole.Name}.RoofBridgeOverhangAngle",
+                rotation_expr=f"{hole.Name}.RoofBridgeRotation + 180 deg",
+                clearance_expr=f"{hole.Name}.RoofBridgeClearance",
+            )
 
     pocket = body.newObject("PartDesign::Pocket", f"{hole.Name}_RoofBridge")
     pocket.Profile = (roofbridge_sketch, "")
@@ -122,10 +135,24 @@ def make_roof_bridges(
     pocket.Label = f"{hole.Label}_RoofBridge"
     pocket.recompute()
 
+    if roofbridge_sketch_other_side is not None:
+        pocket = body.newObject("PartDesign::Pocket", f"{hole.Name}_RoofBridge2")
+        pocket.Profile = (roofbridge_sketch_other_side, "")
+        pocket.ReferenceAxis = (roofbridge_sketch_other_side, ["N_Axis"])
+        pocket.Reversed = hole.Reversed
+        roofbridge_sketch_other_side.Visibility = False
+        pocket.setExpression("Type", f"{hole.Name}.DepthType")
+        pocket.setExpression("Length", f"{hole.Name}.Depth")
+        pocket.Label = f"{hole.Label}_RoofBridge2"
+        pocket.recompute()
+
     if not do_counterbore or not Utils.hole_has_counterbore_maybe(hole):
         return
 
     roofbridge_cb_sketch = Utils.make_derived_sketch(body, profile_sketch, "_RoofBridgeCb")
+    roofbridge_cb_sketch_other_side = None
+    if do_doublesided:
+        roofbridge_cb_sketch_other_side = Utils.make_derived_sketch(body, profile_sketch, "_RoofBridgeCb2")
 
     for hole_loc in hole_locations:
         make_parametric_roof_bridge(
@@ -136,6 +163,15 @@ def make_roof_bridges(
             rotation_expr=f"{hole.Name}.RoofBridgeRotation",
             clearance_expr=f"{hole.Name}.RoofBridgeClearance",
         )
+        if roofbridge_cb_sketch_other_side is not None:
+            make_parametric_roof_bridge(
+                roofbridge_cb_sketch_other_side,
+                hole_loc=hole_loc,
+                diameter_expr=f"{hole.Name}.HoleCutDiameter",
+                angle_expr=f"{hole.Name}.RoofBridgeOverhangAngle",
+                rotation_expr=f"{hole.Name}.RoofBridgeRotation + 180 deg",
+                clearance_expr=f"{hole.Name}.RoofBridgeClearance",
+            )
 
     pocket = body.newObject("PartDesign::Pocket", f"{hole.Name}_RoofBridgeCb")
     pocket.Profile = (roofbridge_cb_sketch, "")
@@ -145,6 +181,16 @@ def make_roof_bridges(
     pocket.setExpression("Length", f"{hole.Name}.HoleCutDepth")
     pocket.Label = f"{hole.Label}_RoofBridgeCb"
     pocket.recompute()
+
+    if roofbridge_cb_sketch_other_side is not None:
+        pocket = body.newObject("PartDesign::Pocket", f"{hole.Name}_RoofBridgeCb2")
+        pocket.Profile = (roofbridge_cb_sketch_other_side, "")
+        pocket.ReferenceAxis = (roofbridge_cb_sketch_other_side, ["N_Axis"])
+        pocket.Reversed = hole.Reversed
+        roofbridge_cb_sketch_other_side.Visibility = False
+        pocket.setExpression("Length", f"{hole.Name}.HoleCutDepth")
+        pocket.Label = f"{hole.Label}_RoofBridgeCb2"
+        pocket.recompute()
 
 
 class RoofBridgeTaskPanel:
@@ -176,6 +222,7 @@ class RoofBridgeTaskPanel:
                 angle = "60 deg"
 
             do_counterbore = self.form.DoCounterbore.checkState() == QtCore.Qt.CheckState.Checked
+            do_doublesided = self.form.DoubleSided.checkState() == QtCore.Qt.CheckState.Checked
             bridge_clearance = self.form.BridgeClearance.property("value")
 
             Gui.Control.closeDialog()
@@ -188,6 +235,7 @@ class RoofBridgeTaskPanel:
                     angle=angle,
                     rotation="90 deg",
                     do_counterbore=do_counterbore,
+                    do_doublesided=do_doublesided,
                     bridge_clearance=bridge_clearance,
                 )
                 App.ActiveDocument.recompute()
