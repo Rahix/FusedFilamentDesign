@@ -27,6 +27,10 @@ generation.
 - **Add roof bridge to counterbore**: If the selected Hole has a counterbore,
   you can also add a roof bridge to the counterbored section.
 
+- **Make roof bridge double sided**: When checked, creates a second roof bridge
+  on the opposite side of the hole.  This allows printing the part both right
+  side up and upside down.
+
 - **Overhang Angle**: The maximum overhang angle to allow.  This will influence
   the width of the bridge.
 
@@ -72,6 +76,8 @@ You will need to delete the feature and recreate it to update these variables:
   * Adding or removing a counterbore.
 - Supporting Sketch
   * The number of circles in the supporting sketch of the original Hole feature.
+- Roof Bridge Properties of the Hole
+  * Whether the roof bridge is double sided or not.
 
 [pd-hole]: https://wiki.freecad.org/PartDesign_Hole
 [df3dp]: https://blog.rahix.de/design-for-3d-printing/

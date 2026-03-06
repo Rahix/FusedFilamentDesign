@@ -36,6 +36,10 @@ generation.
 
 - **Teardrop Angle**: The acute angle at the top of the teardrop.
 
+- **Make Teardrop shape double sided**: When checked, creates a symmetric
+  teardrop shape on both sides of the hole.  This is useful to give you more
+  options for positioning your parts on the build plate.
+
 Click "OK" to then proceed generating the teardrop shapes.  This will
 create the following features:
 
@@ -68,6 +72,8 @@ You will need to delete the feature and recreate it to update these variables:
 
 - Supporting Sketch
   * The number of circles in the supporting sketch of the original Hole feature.
+- Teardrop Properties of the Hole
+  * Whether the teardrop is double sided or not.
 
 [pd-hole]: https://wiki.freecad.org/PartDesign_Hole
 [df3dp]: https://blog.rahix.de/design-for-3d-printing/
