@@ -76,7 +76,7 @@ def make_parametric_teardrop(
     )
     if double_sided:
         last_geo_id2, last_c2 = _single_tear(
-            sketch, hole_loc, diameter_expr, angle_expr, "270 deg"
+            sketch, hole_loc, diameter_expr, angle_expr, f"({rotation_expr}) + 180 deg"
         )
         sketch.delConstraint(last_c2 - 2)
         sketch.delConstraint(last_c - 2)
