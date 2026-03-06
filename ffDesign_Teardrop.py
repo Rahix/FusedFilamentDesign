@@ -10,16 +10,13 @@ import Sketcher
 import ffDesign_Utils as Utils
 
 
-def make_parametric_teardrop(
+def _single_tear(
     sketch,
-    *,
     hole_loc: Utils.LocationExprSet,
     diameter_expr: str,
     angle_expr: str,
     rotation_expr: str,
 ):
-    Utils.assert_sketch(sketch)
-
     last_geo_id = len(sketch.Geometry)
     new_geo = [
         Part.ArcOfCircle(
@@ -60,6 +57,34 @@ def make_parametric_teardrop(
     sketch.setExpression(f"Constraints[{last_c + 3}]", f"{angle_expr}")
     sketch.setExpression(f"Constraints[{last_c + 4}]", f"{rotation_expr}")
 
+    return last_geo_id, last_c
+
+
+def make_parametric_teardrop(
+    sketch,
+    *,
+    hole_loc: Utils.LocationExprSet,
+    diameter_expr: str,
+    angle_expr: str,
+    rotation_expr: str,
+    double_sided: bool = False,
+):
+    Utils.assert_sketch(sketch)
+
+    last_geo_id, last_c = _single_tear(
+        sketch, hole_loc, diameter_expr, angle_expr, rotation_expr
+    )
+    if double_sided:
+        last_geo_id2, last_c2 = _single_tear(
+            sketch, hole_loc, diameter_expr, angle_expr, f"({rotation_expr}) + 180 deg"
+        )
+        sketch.delConstraint(last_c2 - 2)
+        sketch.delConstraint(last_c - 2)
+        double_constraints = [
+            Sketcher.Constraint("Tangent", last_geo_id + 0, 1, last_geo_id2 + 1, 1),
+            Sketcher.Constraint("Tangent", last_geo_id2 + 0, 1, last_geo_id + 1, 1),
+        ]
+        sketch.addConstraint(double_constraints)
     sketch.recompute()
 
 
@@ -70,6 +95,7 @@ def make_teardrops(
     angle: App.Units.Quantity,
     rotation: App.Units.Quantity,
     do_counterbore: bool = False,
+    double_sided: bool = False,
 ):
     Utils.assert_body(body)
     Utils.assert_hole(hole)
@@ -104,6 +130,7 @@ def make_teardrops(
             diameter_expr=f"{hole.Name}.Diameter",
             angle_expr=f"{hole.Name}.TeardropAngle",
             rotation_expr=f"{hole.Name}.TeardropRotation",
+            double_sided=double_sided,
         )
 
     pocket = body.newObject("PartDesign::Pocket", f"{hole.Name}_Teardrops")
@@ -130,6 +157,7 @@ def make_teardrops(
             diameter_expr=f"{hole.Name}.HoleCutDiameter",
             angle_expr=f"{hole.Name}.TeardropAngle",
             rotation_expr=f"{hole.Name}.TeardropRotation",
+            double_sided=double_sided,
         )
 
     pocket = body.newObject("PartDesign::Pocket", f"{hole.Name}_TeardropsCb")
@@ -167,6 +195,9 @@ class TeardropTaskPanel:
             do_counterbore = (
                 self.form.DoCounterbore.checkState() == QtCore.Qt.CheckState.Checked
             )
+            double_sided = (
+                self.form.DoubleSided.checkState() == QtCore.Qt.CheckState.Checked
+            )
 
             Gui.Control.closeDialog()
 
@@ -178,6 +209,7 @@ class TeardropTaskPanel:
                     angle=angle,
                     rotation="90 deg",
                     do_counterbore=do_counterbore,
+                    double_sided=double_sided,
                 )
                 App.ActiveDocument.recompute()
             except Exception as e:
