@@ -397,7 +397,7 @@ class RibThreadsTaskPanel:
             self.form.RibEngagement.setProperty("rawValue", rib_param.rib_engagement)
             self.form.RibDiameter.setProperty("rawValue", rib_param.rib_diameter)
         except KeyError:  # No predefined parameters for this thread
-            self.form.ThreadCore.setProperty("rawValue", hole.Diameter)
+            self.form.ThreadCore.setProperty("value", hole.Diameter)
 
             if not self.hole.ThreadType.startswith("ISOMetric"):
                 raise Utils.ffDesignError(
