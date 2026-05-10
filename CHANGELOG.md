@@ -10,6 +10,17 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+### Added
+- Rib threads now have slightly better support for UTS threads (UNC, UNF,
+  UNEF).  We still do not ship many pre-defined parameters, but you can now use
+  the dialog to define your own and will get guidance whether your parameters
+  actually fit together ([#45]).
+
+### Fixed
+- Fixed rib threads not extracting the drill diameter from the selected
+  `PartDesign_Hole` when no rib parameters are predefined ([#45]).
+
+[#45]: https://github.com/rahix/FusedFilamentDesign/pull/45
 
 
 ## [0.26.100] - 2026-03-06
