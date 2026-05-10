@@ -389,6 +389,8 @@ class RibThreadsTaskPanel:
         try:
             rib_param = RIB_PARAMETERS[self.hole.ThreadType][self.hole.ThreadSize]
 
+            self.normative_diameter = App.Units.Quantity(rib_param.normative, "mm")
+
             self.form.ThreadCore.setProperty("rawValue", rib_param.core_bore)
             self.form.ThreadCore.setEnabled(False)
 
@@ -399,11 +401,24 @@ class RibThreadsTaskPanel:
         except KeyError:  # No predefined parameters for this thread
             self.form.ThreadCore.setProperty("value", hole.Diameter)
 
-            if not self.hole.ThreadType.startswith("ISOMetric"):
+            if self.hole.ThreadType.startswith("ISOMetric"):
+                try:
+                    self.normative_diameter = App.Units.Quantity(float(self.hole.ThreadSize[1:].split("x", 1)[0]), "mm")
+                except Exception as e:
+                    raise Utils.ffDesignError(
+                        f"Cannot extract normative diameter for thread {self.hole.ThreadSize} of type "
+                        + f"{self.hole.ThreadType} at the moment. Please reach out to the {Utils.Log.addon} authors!"
+                        + f"\n\nError: {e}"
+                    )
+            else:
                 raise Utils.ffDesignError(
                     f"Cannot derive parameters for thread {self.hole.ThreadSize} of type {self.hole.ThreadType} at the "
                     + f"moment. Please reach out to the {Utils.Log.addon} authors!"
                 )
+
+        norm_mm = self.normative_diameter.getValueAs("mm").Value
+        self.form.MajorDiameter.setText(f"ø {norm_mm:.2f} mm")
+        self.form.MajorDiameter.setEnabled(False)
 
     def onUseGlobalTemplate(self):
         self.global_template = self.form.UseGlobalTemplate.checkState() == QtCore.Qt.CheckState.Checked
@@ -457,18 +472,9 @@ class RibThreadsTaskPanel:
                 rib_diameter=self.form.RibDiameter.property("rawValue"),
             )
         except KeyError:  # No predefined rib parameters for this thread type
-            # Pull the normative diameter from the thread size string
-            if self.hole.ThreadType.startswith("ISOMetric"):
-                normative_diameter = float(self.hole.ThreadSize[1:].split("x", 1)[0])
-            else:
-                raise Utils.ffDesignError(
-                    f"Cannot derive parameters for thread {self.hole.ThreadSize} of type {self.hole.ThreadType} at the "
-                    + f"moment. Please reach out to the {Utils.Log.addon} authors!"
-                )
-
             rib_param = RibParameters(
                 name=self.hole.ThreadSize,
-                normative=normative_diameter,
+                normative=self.normative_diameter.getValueAs("mm").Value,
                 core_bore=self.form.ThreadCore.property("rawValue"),
                 core_diameter=self.form.ThreadCore.property("rawValue"),
                 entrance_depth=self.form.EntranceDepth.property("rawValue"),
