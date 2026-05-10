@@ -57,6 +57,44 @@ RIB_PARAMETERS["ISOMetricProfile"]["M6x1"] = RIB_PARAMETERS["ISOMetricProfile"][
 RIB_PARAMETERS["ISOMetricProfile"]["M8x1.25"] = RIB_PARAMETERS["ISOMetricProfile"]["M8"]
 
 
+UTS_DIAMETERS = {
+    "#0": "0.0600 in",
+    "#1": "0.0730 in",
+    "#2": "0.0860 in",
+    "#3": "0.0990 in",
+    "#4": "0.1120 in",
+    "#5": "0.1250 in",
+    "#6": "0.1380 in",
+    "#8": "0.1640 in",
+    "#10": "0.1900 in",
+    "#12": "0.2160 in",
+    "1/4": "0.2500 in",
+    "5/16": "0.3125 in",
+    "3/8": "0.3750 in",
+    "7/16": "0.4375 in",
+    "1/2": "0.5000 in",
+    "9/16": "0.5625 in",
+    "5/8": "0.6250 in",
+    "3/4": "0.7500 in",
+    "7/8": "0.8750 in",
+    "1": "1.0000 in",
+    "1 1/8": "1.1250 in",
+    "1 1/4": "1.2500 in",
+    "1 3/8": "1.3750 in",
+    "1 1/2": "1.5000 in",
+    "1 3/4": "1.7500 in",
+    "2": "2.0000 in",
+    "2 1/4": "2.2500 in",
+    "2 1/2": "2.5000 in",
+    "2 3/4": "2.7500 in",
+    "3": "3.0000 in",
+    "3 1/4": "3.2500 in",
+    "3 1/2": "3.5000 in",
+    "3 3/4": "3.7500 in",
+    "4": "4.0000 in",
+}
+
+
 def make_parametric_circle(sketch, hole_loc: Utils.LocationExprSet, size_expr: str):
     Utils.assert_sketch(sketch)
 
@@ -409,6 +447,14 @@ class RibThreadsTaskPanel:
                         f"Cannot extract normative diameter for thread {self.hole.ThreadSize} of type "
                         + f"{self.hole.ThreadType} at the moment. Please reach out to the {Utils.Log.addon} authors!"
                         + f"\n\nError: {e}"
+                    )
+            elif self.hole.ThreadType in ("UNC", "UNF", "UNEF"):
+                try:
+                    self.normative_diameter = App.Units.Quantity(UTS_DIAMETERS[self.hole.ThreadSize])
+                except KeyError:
+                    raise Utils.ffDesignError(
+                        f"Cannot extract normative diameter for thread {self.hole.ThreadSize} of type "
+                        + f"{self.hole.ThreadType} at the moment. Please reach out to the {Utils.Log.addon} authors!"
                     )
             else:
                 raise Utils.ffDesignError(
