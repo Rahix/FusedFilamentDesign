@@ -533,6 +533,25 @@ class RibThreadsTaskPanel:
         if self.hole.Diameter > rib_param.normative:
             raise Utils.ffDesignError("Hole diameter exceeds normative thread diameter.  Something is way off...")
 
+        if rib_param.rib_engagement <= 0:
+            raise Utils.ffDesignError(
+                f"Rib engagement must be greater than zero (got {rib_param.rib_engagement:.2f} mm)"
+            )
+
+        min_rib_diameter = rib_param.rib_engagement * 2
+        if rib_param.rib_diameter < min_rib_diameter:
+            raise Utils.ffDesignError(
+                f"Rib diameter is too small! Expected at least {min_rib_diameter:.2f} mm, got {rib_param.rib_diameter:.2f} mm"
+            )
+
+        if rib_param.entrance_depth <= 0:
+            raise Utils.ffDesignError(
+                f"Entrance depth must be greated than zero (got {rib_param.entrance_depth:.2f} mm)"
+            )
+
+        if rib_param.outer_diameter < rib_param.normative:
+            raise Utils.ffDesignError("Outer diameter must be greater than normative thread diameter!")
+
         if self.hole.Diameter > (rib_param.normative - rib_param.rib_engagement * 2):
             Utils.warning_confirm_proceed("Drill diameter of Hole is too big for ribs - they will get cut off!")
 
