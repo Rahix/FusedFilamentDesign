@@ -10,6 +10,9 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+
+
+## [0.26.200] - 2026-05-11
 ### Added
 - Rib threads now have slightly better support for UTS threads (UNC, UNF,
   UNEF).  We still do not ship many pre-defined parameters, but you can now use
@@ -86,7 +89,8 @@ and this project adheres to
 ## [0.25.200] - 2025-05-15
 Initial release 🎉
 
-[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.26.100...HEAD
+[Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.26.200...HEAD
+[0.26.200]: https://github.com/rahix/FusedFilamentDesign/compare/v0.26.100...v0.26.200
 [0.26.100]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.510...v0.26.100
 [0.25.510]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.480...v0.25.510
 [0.25.480]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.380...v0.25.480
