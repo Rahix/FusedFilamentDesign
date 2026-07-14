@@ -10,6 +10,11 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+### Fixed
+- Fixed hole-related tools ignoring holes that are created from defining
+  external geometry ([#49]).
+
+[#49]: https://github.com/rahix/FusedFilamentDesign/pull/49
 
 
 ## [0.26.200] - 2026-05-11
