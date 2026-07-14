@@ -5,6 +5,7 @@ from PySide import QtCore, QtGui
 
 import FreeCADGui as Gui
 import FreeCAD as App
+import Sketcher
 
 
 class Resources:
@@ -244,6 +245,22 @@ def get_hole_profile_type(hole):
     # In older FreeCAD versions where `BaseProfileType` did not exist, the
     # `PartDesign_Hole` feature only used circles.
     return getattr(hole, "BaseProfileType", MASK_PROFILE_CIRCLES)
+
+
+def sketch_external_geo_is_defining(sketch, index):
+    assert_sketch(sketch)
+
+    obj = sketch.ExternalGeo[index]
+
+    # TODO: Right now this seems to be the only way to figure out if
+    # external geometry is defining (==non-construction)
+    try:
+        egf = Sketcher.ExternalGeometryFacade(obj)
+        return egf.testFlag("Defining")
+    except (AttributeError, TypeError):
+        # When ExternalGeometryFacade or the Defining flag do not exist, return None
+        Log.warning("This version of FreeCAD does not support checking for defining external geometry. Ignoring it...")
+        return None
 
 
 @dataclasses.dataclass
