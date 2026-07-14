@@ -273,15 +273,13 @@ class LocationExprSet:
 def get_sketch_locations(sketch, profile_type):
     assert_sketch(sketch)
 
-    def try_make_loc_expr_set(index, obj):
-        # Construction geometry is always ignored
-        if sketch.getConstruction(index):
-            return None
+    def try_make_loc_expr_set(index, obj, kind):
+        assert kind in ["Geometry", "ExternalGeo"]
 
         if (profile_type & MASK_PROFILE_POINTS) != 0:
             if obj.TypeId == "Part::GeomPoint":
-                x_expr = f"{sketch.Name}.Geometry[{index}].X"
-                y_expr = f"{sketch.Name}.Geometry[{index}].Y"
+                x_expr = f"{sketch.Name}.{kind}[{index}].X"
+                y_expr = f"{sketch.Name}.{kind}[{index}].Y"
                 return LocationExprSet(
                     vector_expr=f"vector({x_expr}, {y_expr}, 0)",
                     x_expr=f"{x_expr} * 1mm",
@@ -289,7 +287,7 @@ def get_sketch_locations(sketch, profile_type):
                 )
         if (profile_type & MASK_PROFILE_CIRCLES) != 0:
             if obj.TypeId == "Part::GeomCircle":
-                center = f"{sketch.Name}.Geometry[{index}].Center"
+                center = f"{sketch.Name}.{kind}[{index}].Center"
                 return LocationExprSet(
                     vector_expr=center,
                     x_expr=f"{center}.x * 1mm",
@@ -297,7 +295,7 @@ def get_sketch_locations(sketch, profile_type):
                 )
         if (profile_type & MASK_PROFILE_ARCS) != 0:
             if obj.TypeId == "Part::GeomArcOfCircle":
-                center = f"{sketch.Name}.Geometry[{index}].Center"
+                center = f"{sketch.Name}.{kind}[{index}].Center"
                 return LocationExprSet(
                     vector_expr=center,
                     x_expr=f"{center}.x * 1mm",
@@ -306,7 +304,27 @@ def get_sketch_locations(sketch, profile_type):
 
         return None
 
-    return [h for h in (try_make_loc_expr_set(i, obj) for i, obj in enumerate(sketch.Geometry)) if h is not None]
+    locations = []
+
+    for i, obj in enumerate(sketch.Geometry):
+        # Ignore geometry if it is construction geometry.
+        if sketch.getConstruction(i):
+            continue
+
+        loc = try_make_loc_expr_set(i, obj, "Geometry")
+        if loc is not None:
+            locations.append(loc)
+
+    for i, obj in enumerate(sketch.ExternalGeo):
+        # If this external geometry is not defining, ignore it.
+        if not sketch_external_geo_is_defining(sketch, i):
+            continue
+
+        loc = try_make_loc_expr_set(i, obj, "ExternalGeo")
+        if loc is not None:
+            locations.append(loc)
+
+    return locations
 
 
 def set_shape_binder_styles(binder):
