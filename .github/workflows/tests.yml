@@ -1,0 +1,44 @@
+name: FreeCAD tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        freecad: ["1.0.*", "1.1.*"]
+
+    defaults:
+      run:
+        shell: bash -el {0}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install FreeCAD ${{ matrix.freecad }}
+        uses: mamba-org/setup-micromamba@v3
+        with:
+          environment-name: freecad-ci
+          create-args: freecad=${{ matrix.freecad }}
+
+      - name: Install virtual display
+        run: sudo apt-get update && sudo apt-get install --yes xvfb
+
+      - name: Install addon
+        run: |
+          mkdir -p "$HOME/.local/share/FreeCAD/Mod"
+          ln -s "$GITHUB_WORKSPACE" "$HOME/.local/share/FreeCAD/Mod/FusedFilamentDesign"
+
+      - name: Run FreeCAD tests
+        run: |
+          set -o pipefail
+          xvfb-run -a FreeCAD -t ffDesign_Tests 2>&1 | tee freecad-tests.log
+          ! grep -q "Traceback (most recent call last)" freecad-tests.log
