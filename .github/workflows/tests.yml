@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install FreeCAD ${{ matrix.freecad }}
         uses: mamba-org/setup-micromamba@v3
@@ -38,7 +38,9 @@ jobs:
           ln -s "$GITHUB_WORKSPACE" "$HOME/.local/share/FreeCAD/Mod/FusedFilamentDesign"
 
       - name: Run FreeCAD tests
+        shell: micromamba-shell {0}
         run: |
           set -o pipefail
-          xvfb-run -a FreeCAD -t ffDesign_Tests 2>&1 | tee freecad-tests.log
+          freecad_executable="$(command -v FreeCAD || command -v freecad)"
+          xvfb-run -a "$freecad_executable" -t ffDesign_Tests 2>&1 | tee freecad-tests.log
           ! grep -q "Traceback (most recent call last)" freecad-tests.log
