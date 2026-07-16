@@ -59,3 +59,6 @@ class ffDesignWB:
 
 
 register_pd_toolbar()
+
+if "ffDesign_Tests" not in FreeCAD.__unit_test__:
+    FreeCAD.__unit_test__.append("ffDesign_Tests")
