@@ -1,5 +1,6 @@
 import math
 import dataclasses
+import re
 
 from PySide import QtCore, QtGui
 
@@ -275,7 +276,17 @@ def rib_template_name(hole, global_template: bool):
 def find_rib_template(body, hole, global_template: bool):
     name = rib_template_name(hole, global_template)
     if global_template:
-        return body.Document.getObject(name)
+        template = body.Document.getObject(name)
+        if template is None:
+            sanitized_name = re.sub(r"[^A-Za-z0-9_]", "_", name)
+            template = body.Document.getObject(sanitized_name)
+        if template is not None:
+            return template
+
+        # New templates preserve the unsanitized thread name in their Label,
+        # which also provides a fallback if FreeCAD's sanitization changes.
+        templates = body.Document.getObjectsByLabel(name)
+        return templates[0] if templates else None
     else:
         return body.getObject(name)
 
@@ -292,6 +303,7 @@ def get_or_create_rib_template(body, hole, global_template: bool, rib_param: Rib
     name = rib_template_name(hole, global_template)
     if global_template:
         template = body.Document.addObject("Sketcher::SketchObject", name)
+        template.Label = name
     else:
         template = body.newObject("Sketcher::SketchObject", name)
         template.Label = f"{hole.Label}_RibThread_Template"
