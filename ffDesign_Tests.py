@@ -7,10 +7,13 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import BOPTools.SplitFeatures
 
+from PySide import QtCore
+
 import ffDesign_Utils as Utils
 
 import ffDesign_CounterboreBridges
 import ffDesign_RibThreads
+import ffDesign_RoofBridge
 
 TEST_DOCUMENTS_PATH = "ffDesign_TestData"
 
@@ -182,3 +185,56 @@ class RibThreads_Fc11(ffDesignTestCase_Fc11):
     def test_known_unc(self):
         for thread in ffDesign_RibThreads.RIB_PARAMETERS["UNC"]:
             self.thread_test("UNC", thread)
+
+
+class RoofBridges(ffDesignTestCase):
+    test_document = "RoofBridges.FCStd"
+
+    def apply_roof_bridge_for_hole(
+        self,
+        hole_name: str,
+        *,
+        double_sided=None,
+        include_counterbore=None,
+        clearance=None,
+        angle_60=False,
+        ignore_missing=False,
+    ):
+        hole = self.body.getObject(hole_name)
+        Utils.assert_hole(hole)
+
+        dialog = ffDesign_RoofBridge.RoofBridgeTaskPanel(self.body, hole)
+        Gui.Control.showDialog(dialog)
+
+        if double_sided is not None:
+            if double_sided:
+                dialog.form.DoubleSided.setCheckState(QtCore.Qt.CheckState.Checked)
+            else:
+                dialog.form.DoubleSided.setCheckState(QtCore.Qt.CheckState.Unchecked)
+
+        if include_counterbore is not None:
+            if include_counterbore:
+                dialog.form.DoCounterbore.setCheckState(QtCore.Qt.CheckState.Checked)
+            else:
+                dialog.form.DoCounterbore.setCheckState(QtCore.Qt.CheckState.Unchecked)
+
+        if clearance is not None:
+            dialog.form.BridgeClearance.setProperty("rawValue", clearance)
+
+        if angle_60:
+            dialog.form.Angle60.toggle()
+
+        dialog.accept()
+
+    def test_roof_bridges(self):
+        self.prepare_regression_test()
+
+        self.apply_roof_bridge_for_hole("Hole")
+        self.apply_roof_bridge_for_hole("Hole001", double_sided=True, angle_60=True)
+        self.apply_roof_bridge_for_hole("Hole002", double_sided=True)
+        self.apply_roof_bridge_for_hole("Hole003", include_counterbore=False, clearance=0.6)
+
+        self.body.getObject("Hole002").RoofBridgeRotation = "0deg"
+        App.ActiveDocument.recompute()
+
+        self.assert_expected_body()
