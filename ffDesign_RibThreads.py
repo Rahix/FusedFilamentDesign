@@ -417,7 +417,7 @@ class RibThreadsTaskPanel:
         self.template_exists = False
         self.form = Gui.PySideUic.loadUi(Utils.Resources.get_panel("ffDesign_RibThreads.ui"))
 
-        self.form.UseGlobalTemplate.setCheckState(QtCore.Qt.CheckState.Checked)
+        self.form.UseGlobalTemplate.setCheckState(QtCore.Qt.CheckState.Unchecked)
         self.form.UseGlobalTemplate.stateChanged.connect(self.onUseGlobalTemplate)
         self.onUseGlobalTemplate()
 
