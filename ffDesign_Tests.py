@@ -144,3 +144,41 @@ class RibThreads(ffDesignTestCase):
         App.ActiveDocument.recompute()
 
         self.assert_expected_body()
+
+
+class RibThreads_Fc11(ffDesignTestCase_Fc11):
+    test_document = "TapHoles.FCStd"
+
+    def thread_test(self, thread_type: str, thread_size: str):
+        # Prep for the next test
+        App.closeDocument(self.doc.Name)
+        self.setUp()
+
+        try:
+            self.prepare_regression_test()
+
+            hole = self.body.Tip
+            Utils.assert_hole(hole)
+
+            hole.ThreadType = thread_type
+            hole.ThreadSize = thread_size
+            App.ActiveDocument.recompute()
+
+            dialog = ffDesign_RibThreads.RibThreadsTaskPanel(self.body, hole)
+            Gui.Control.showDialog(dialog)
+            dialog.accept()
+        except Exception as e:
+            Utils.Log.warning(f"Test failure during thread {thread_type} {thread_size}")
+            raise e from None
+
+    def test_known_metric(self):
+        for thread in ffDesign_RibThreads.RIB_PARAMETERS["ISOMetricProfile"]:
+            if "x" not in thread or thread == "M6x1":
+                # This is one of the legacy thread names, skip
+                continue
+
+            self.thread_test("ISOMetricProfile", thread)
+
+    def test_known_unc(self):
+        for thread in ffDesign_RibThreads.RIB_PARAMETERS["UNC"]:
+            self.thread_test("UNC", thread)
