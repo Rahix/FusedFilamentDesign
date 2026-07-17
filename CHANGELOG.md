@@ -10,6 +10,10 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+### Changed
+- For rib threads, the global template option is now deselected by default (and
+  you can enable it, when you explicitly want a global template).
+
 ### Fixed
 - Fixed hole-related tools ignoring holes that are created from defining
   external geometry ([#49]).
