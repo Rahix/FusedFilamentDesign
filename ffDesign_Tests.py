@@ -134,13 +134,9 @@ class RibThreads(ffDesignTestCase):
 
         ffDesign_RibThreads.verify_rib_thread_suitability(hole)
 
-        ffDesign_RibThreads.make_rib_threads(
-            self.body,
-            hole,
-            global_template=False,
-            rib_param=ffDesign_RibThreads.RIB_PARAMETERS["ISOMetricProfile"]["M4"],
-        )
-        App.ActiveDocument.recompute()
+        dialog = ffDesign_RibThreads.RibThreadsTaskPanel(self.body, hole)
+        Gui.Control.showDialog(dialog)
+        dialog.accept()
 
         # The file expects an additional rotation of the rib threads to be present
         varset = self.body.getObject("Hole_RibThread_Settings")
