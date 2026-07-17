@@ -39,6 +39,9 @@ class ffDesignTestCase(unittest.TestCase, abc.ABC):
     test_document = None  # Name of the test document for this testcase
 
     def setUp(self):
+        # Skip all the ffDesign dialogs during test runs
+        Utils.SKIP_ALL_DIALOGS = True
+
         test_document_path = get_test_dir() / self.test_document
         if not test_document_path.exists():
             Utils.Log.error(f"""\
@@ -54,6 +57,9 @@ Please read the documentation of {Utils.Log.addon} to understand how to prepare 
         self.doc = App.openDocument(str(test_document_path))
 
     def tearDown(self):
+        # Re-enable ffDesign dialogs after the test completes
+        Utils.SKIP_ALL_DIALOGS = False
+
         # You can use FFDESIGN_KEEP_TEST_DOC=1 to keep the test document open to inspect it.
         # Only makes sense when running tests with `-r` instead of `-t`.
         # You should probably only use this when running a single test case.
