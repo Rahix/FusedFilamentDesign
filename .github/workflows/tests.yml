@@ -1,0 +1,68 @@
+name: ffDesign Testsuite
+
+on:
+  push:
+    branches:
+      - main
+      - wip
+  pull_request:
+
+permissions: read-all
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        freecad: ["1.0.2", "1.1.1"]
+
+    defaults:
+      run:
+        shell: bash -el {0}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Cache FreeCAD executables
+        id: cache-freecad
+        uses: actions/cache@v6
+        with:
+          path: FreeCAD.AppImage
+          key: freecad-cache-v1-${{ matrix.freecad }}
+
+      - name: Download FreeCAD 1.1.1 AppImage
+        if: steps.cache-freecad.outputs.cache-hit != 'true' && matrix.freecad == '1.1.1'
+        run: |
+          curl -L -o FreeCAD.AppImage https://github.com/FreeCAD/FreeCAD/releases/download/1.1.1/FreeCAD_1.1.1-Linux-x86_64-py311.AppImage
+          chmod +x FreeCAD.AppImage
+
+      - name: Download FreeCAD 1.0.2 AppImage
+        if: steps.cache-freecad.outputs.cache-hit != 'true' && matrix.freecad == '1.0.2'
+        run: |
+          curl -L -o FreeCAD.AppImage https://github.com/FreeCAD/FreeCAD/releases/download/1.0.2/FreeCAD_1.0.2-conda-Linux-x86_64-py311.AppImage
+          chmod +x FreeCAD.AppImage
+
+      - name: Install virtual display
+        run: sudo apt-get update && sudo apt-get install --yes xvfb
+
+      - name: Install addon
+        run: |
+          mkdir -p "$HOME/.local/share/FreeCAD/Mod"
+          ln -s "$GITHUB_WORKSPACE" "$HOME/.local/share/FreeCAD/Mod/FusedFilamentDesign"
+
+      - name: Download test documents
+        run: |
+          git clone https://github.com/Rahix/ffDesign_TestData.git "$GITHUB_WORKSPACE/ffDesign_TestData"
+
+      - name: Show FreeCAD version
+        if: matrix.freecad == '1.1.1' # FreeCAD 1.0 hangs on a dialog window...
+        run: |
+          xvfb-run -a ./FreeCAD.AppImage -c -v --verbose
+
+      - name: Run FreeCAD tests
+        run: |
+          set -o pipefail
+          xvfb-run -a ./FreeCAD.AppImage -t ffDesign_Tests 2>&1 | tee freecad-tests.log
+          ! grep -q "Traceback (most recent call last)" freecad-tests.log
