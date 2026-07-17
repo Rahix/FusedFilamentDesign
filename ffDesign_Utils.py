@@ -41,6 +41,10 @@ class Log:
         App.Console.PrintMessage(f"[{cls.addon}] {msg}\n")
 
 
+# This can be changed by e.g. testsuites to avoid error dialogs
+SKIP_ALL_DIALOGS = False
+
+
 class ffDesignError(Exception):
     def __init__(self, message: str, *, dialog: bool = True):
         self.message = message
@@ -49,9 +53,12 @@ class ffDesignError(Exception):
 
     def emit_to_user(self):
         Log.error(self.message)
-        if self.dialog:
+        if self.dialog and not SKIP_ALL_DIALOGS:
             # Also show as a modal dialog
             QtGui.QMessageBox.warning(None, Log.addon, f"[{Log.addon}] {self.message}")
+        if SKIP_ALL_DIALOGS:
+            # When skipping dialogs, we definitely want to bubble up the exception
+            raise self
 
 
 class ffDesignPreconditionError(ffDesignError):
@@ -62,6 +69,8 @@ class ffDesignPreconditionError(ffDesignError):
 
 def warning_confirm_proceed(message: str, question: str = "Proceed anyway?"):
     Log.warning(message)
+    if SKIP_ALL_DIALOGS:
+        raise ffDesignError("Not proceeding with SKIP_ALL_DIALOGS")
     reply = QtGui.QMessageBox.question(None, Log.addon, f"[{Log.addon}] {message}\n{question}")
     if reply != QtGui.QMessageBox.Yes:
         raise ffDesignError("Aborted on user request due to previous warning", dialog=False)
