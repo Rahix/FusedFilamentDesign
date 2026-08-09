@@ -14,21 +14,21 @@
    <string>Teardrop</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="0" column="0" colspan="2">
     <widget class="QRadioButton" name="Angle90">
      <property name="text">
       <string>90° Teardrop Angle</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="1" column="0" colspan="2">
     <widget class="QRadioButton" name="Angle120">
      <property name="text">
       <string>120° Teardrop Angle</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="2" column="0" colspan="2">
     <widget class="QCheckBox" name="DoCounterbore">
     <property name="toolTip">
       <string>Also add a Teardrop shape to the counterbore of this hole.</string>
@@ -38,7 +38,7 @@
     </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="3" column="0" colspan="2">
     <widget class="QCheckBox" name="DoubleSided">
     <property name="toolTip">
       <string>Make the Teardrop shape double sided (symmetric).</string>
@@ -46,6 +46,23 @@
     <property name="text">
       <string>Make Teardrop shape double sided</string>
     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Rotation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="Gui::QuantitySpinBox" name="TeardropRotation" native="true">
+     <property name="unit" stdset="0">
+      <string notr="true">deg</string>
+     </property>
+     <property name="toolTip">
+      <string>Direction of the teardrop around the hole axis.</string>
+     </property>
     </widget>
    </item>
   </layout>

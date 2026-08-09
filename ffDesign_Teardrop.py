@@ -170,6 +170,9 @@ class TeardropTaskPanel:
         # Default is 120° teardrop angle
         self.form.Angle120.toggle()
 
+        # 90° means "up" in the sketch plane, usually
+        self.form.TeardropRotation.setProperty("rawValue", 90)
+
     def accept(self):
         try:
             angle = "120 deg"
@@ -180,6 +183,7 @@ class TeardropTaskPanel:
 
             do_counterbore = self.form.DoCounterbore.checkState() == QtCore.Qt.CheckState.Checked
             double_sided = self.form.DoubleSided.checkState() == QtCore.Qt.CheckState.Checked
+            rotation = self.form.TeardropRotation.property("value")
 
             Gui.Control.closeDialog()
 
@@ -189,7 +193,7 @@ class TeardropTaskPanel:
                     self.body,
                     self.hole,
                     angle=angle,
-                    rotation="90 deg",
+                    rotation=rotation,
                     do_counterbore=do_counterbore,
                     double_sided=double_sided,
                 )
