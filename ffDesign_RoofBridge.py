@@ -213,6 +213,9 @@ class RoofBridgeTaskPanel:
         # Default is 45° overhang angle
         self.form.Angle45.toggle()
 
+        # 90° means "up" in the sketch plane, usually
+        self.form.BridgeRotation.setProperty("rawValue", 90)
+
     def accept(self):
         try:
             angle = "45 deg"
@@ -224,6 +227,7 @@ class RoofBridgeTaskPanel:
             do_counterbore = self.form.DoCounterbore.checkState() == QtCore.Qt.CheckState.Checked
             do_doublesided = self.form.DoubleSided.checkState() == QtCore.Qt.CheckState.Checked
             bridge_clearance = self.form.BridgeClearance.property("value")
+            bridge_rotation = self.form.BridgeRotation.property("value")
 
             Gui.Control.closeDialog()
 
@@ -233,7 +237,7 @@ class RoofBridgeTaskPanel:
                     self.body,
                     self.hole,
                     angle=angle,
-                    rotation="90 deg",
+                    rotation=bridge_rotation,
                     do_counterbore=do_counterbore,
                     do_doublesided=do_doublesided,
                     bridge_clearance=bridge_clearance,
