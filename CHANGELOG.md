@@ -10,6 +10,13 @@ and this project adheres to
 - [Calendar Versioning](https://calver.org/) with the scheme `0.YY.WW#` (with `#` being the patch version)
 
 ## [Unreleased]
+### Added
+- For teardrops and roof bridges, you can now set the direction/rotation that
+  they should be facing directly in the task panel ([#54]). As before, the
+  rotation then becomes a parametric property on the original `PartDesign_Hole`
+  where you can edit it afterwards.
+
+[#54]: https://github.com/rahix/FusedFilamentDesign/pull/54
 
 
 ## [0.26.300] - 2026-07-21
