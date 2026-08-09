@@ -45,9 +45,7 @@ def _single_tear(
         Sketcher.Constraint("DistanceX", last_geo_id + 0, 3, 0),
         Sketcher.Constraint("DistanceY", last_geo_id + 0, 3, 0),
         Sketcher.Constraint("Diameter", last_geo_id + 0, 2),
-        Sketcher.Constraint(
-            "Angle", last_geo_id + 1, 2, last_geo_id + 2, 2, math.pi / 2
-        ),
+        Sketcher.Constraint("Angle", last_geo_id + 1, 2, last_geo_id + 2, 2, math.pi / 2),
         Sketcher.Constraint("Angle", last_geo_id + 3, math.pi / 2),
     ]
     sketch.addConstraint(new_constraints)
@@ -71,9 +69,7 @@ def make_parametric_teardrop(
 ):
     Utils.assert_sketch(sketch)
 
-    last_geo_id, last_c = _single_tear(
-        sketch, hole_loc, diameter_expr, angle_expr, rotation_expr
-    )
+    last_geo_id, last_c = _single_tear(sketch, hole_loc, diameter_expr, angle_expr, rotation_expr)
     if double_sided:
         last_geo_id2, last_c2 = _single_tear(
             sketch, hole_loc, diameter_expr, angle_expr, f"({rotation_expr}) + 180 deg"
@@ -106,23 +102,17 @@ def make_teardrops(
     assert rotation.Unit.Type == "Angle"
 
     if "TeardropAngle" not in hole.PropertiesList:
-        hole.addProperty(
-            "App::PropertyAngle", "TeardropAngle", group="FusedFilamentDesign"
-        )
+        hole.addProperty("App::PropertyAngle", "TeardropAngle", group="FusedFilamentDesign")
     hole.TeardropAngle = angle
 
     if "TeardropRotation" not in hole.PropertiesList:
-        hole.addProperty(
-            "App::PropertyAngle", "TeardropRotation", group="FusedFilamentDesign"
-        )
+        hole.addProperty("App::PropertyAngle", "TeardropRotation", group="FusedFilamentDesign")
     hole.TeardropRotation = rotation
 
     profile_sketch = Utils.get_hole_profile_sketch(hole)
     teardrop_sketch = Utils.make_derived_sketch(body, profile_sketch, "_Teardrops")
 
-    hole_locations = Utils.get_sketch_locations(
-        profile_sketch, Utils.get_hole_profile_type(hole)
-    )
+    hole_locations = Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole))
     for hole_loc in hole_locations:
         make_parametric_teardrop(
             teardrop_sketch,
@@ -146,9 +136,7 @@ def make_teardrops(
     if not do_counterbore or not Utils.hole_has_counterbore_maybe(hole):
         return
 
-    teardrops_cb_sketch = Utils.make_derived_sketch(
-        body, profile_sketch, "_TeardropsCb"
-    )
+    teardrops_cb_sketch = Utils.make_derived_sketch(body, profile_sketch, "_TeardropsCb")
 
     for hole_loc in hole_locations:
         make_parametric_teardrop(
@@ -177,9 +165,7 @@ class TeardropTaskPanel:
 
         self.body = body
         self.hole = hole
-        self.form = Gui.PySideUic.loadUi(
-            Utils.Resources.get_panel("ffDesign_Teardrop.ui")
-        )
+        self.form = Gui.PySideUic.loadUi(Utils.Resources.get_panel("ffDesign_Teardrop.ui"))
 
         # Default is 120° teardrop angle
         self.form.Angle120.toggle()
@@ -192,12 +178,8 @@ class TeardropTaskPanel:
             elif self.form.Angle120.isChecked():
                 angle = "120 deg"
 
-            do_counterbore = (
-                self.form.DoCounterbore.checkState() == QtCore.Qt.CheckState.Checked
-            )
-            double_sided = (
-                self.form.DoubleSided.checkState() == QtCore.Qt.CheckState.Checked
-            )
+            do_counterbore = self.form.DoCounterbore.checkState() == QtCore.Qt.CheckState.Checked
+            double_sided = self.form.DoubleSided.checkState() == QtCore.Qt.CheckState.Checked
 
             Gui.Control.closeDialog()
 
