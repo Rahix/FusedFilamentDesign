@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        freecad: ["1.0.2", "1.1.1"]
+        freecad: ["1.0.2", "1.1.1", "1.1.0"]
 
     defaults:
       run:
@@ -38,6 +38,12 @@ jobs:
           curl -L -o FreeCAD.AppImage https://github.com/FreeCAD/FreeCAD/releases/download/1.1.1/FreeCAD_1.1.1-Linux-x86_64-py311.AppImage
           chmod +x FreeCAD.AppImage
 
+      - name: Download FreeCAD 1.1.0 AppImage
+        if: steps.cache-freecad.outputs.cache-hit != 'true' && matrix.freecad == '1.1.0'
+        run: |
+          curl -L -o FreeCAD.AppImage https://github.com/FreeCAD/FreeCAD/releases/download/1.1.0/FreeCAD_1.1.0-Linux-x86_64-py311.AppImage
+          chmod +x FreeCAD.AppImage
+
       - name: Download FreeCAD 1.0.2 AppImage
         if: steps.cache-freecad.outputs.cache-hit != 'true' && matrix.freecad == '1.0.2'
         run: |
@@ -57,7 +63,7 @@ jobs:
           git clone https://github.com/Rahix/ffDesign_TestData.git "$GITHUB_WORKSPACE/ffDesign_TestData"
 
       - name: Show FreeCAD version
-        if: matrix.freecad == '1.1.1' # FreeCAD 1.0 hangs on a dialog window...
+        if: matrix.freecad != '1.0.2' # FreeCAD 1.0 hangs on a dialog window...
         run: |
           xvfb-run -a ./FreeCAD.AppImage -c -v --verbose
 
