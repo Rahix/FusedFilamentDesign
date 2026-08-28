@@ -225,6 +225,11 @@ def get_hole_profile_sketch(hole):
     if profile_sketch.TypeId != "Sketcher::SketchObject":
         raise ffDesignError("Hole profile must be a Sketch!")
 
+    if hole.Profile[1] != [""]:
+        raise ffDesignError(
+            "Only some parts of the sketch are selected as profile for the PartDesign_Hole. This is not supported yet!"
+        )
+
     return profile_sketch
 
 
