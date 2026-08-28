@@ -122,6 +122,24 @@ class HoleLocations(ffDesignTestCase_Fc11):
         self.assert_expected_body()
 
 
+class PartialHoleProfiles(ffDesignTestCase_Fc11):
+    test_document = "PartialHoleProfile.FCStd"
+
+    @unittest.expectedFailure
+    def test_plausibility(self):
+        self.prepare_regression_test()
+        self.assert_expected_body()
+
+    def test_partial_profile(self):
+        """
+        Test that a PartDesign_Hole using a partial sketch as its profile is
+        correctly handled by the counterbore bridges tool.
+        """
+        self.prepare_regression_test()
+        ffDesign_CounterboreBridges.CounterboreBridgesCommand().Activated()
+        self.assert_expected_body()
+
+
 class RibThreads(ffDesignTestCase):
     test_document = "TapHoles.FCStd"
 
