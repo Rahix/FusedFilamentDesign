@@ -106,12 +106,12 @@ def make_upside_down_counterbores(body, hole):
     if not Utils.hole_has_counterbore_sure(hole):
         Utils.warning_confirm_proceed("Selected Hole does not seem to have a known counterbore type.")
 
-    profile_sketch = Utils.get_hole_profile_sketch(hole)
+    profile_sketch, profile_partial = Utils.get_hole_profile_sketch(hole)
 
     sketch_bridges_y = Utils.make_derived_sketch(body, profile_sketch, "_BridgesY")
     sketch_bridges_x = Utils.make_derived_sketch(body, profile_sketch, "_BridgesX")
 
-    for hole_loc in Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole)):
+    for hole_loc in Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole), profile_partial):
         # Create parametric y bridges cutout for this circle
         make_parametric_y_cutout(
             sketch_bridges_y,
