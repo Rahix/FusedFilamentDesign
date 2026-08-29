@@ -19,8 +19,13 @@ and this project adheres to
   from a subset of edges from a sketch instead of the entire sketch (when you
   select only a few of the edges before creating the `PartDesign_Hole`) ([#57]).
 
+### Fixed
+- Fixed RibThreads sometimes generating with inverted entrance taper angle on
+  FreeCAD 1.1 versions ([#59]).
+
 [#54]: https://github.com/rahix/FusedFilamentDesign/pull/54
 [#57]: https://github.com/rahix/FusedFilamentDesign/pull/57
+[#59]: https://github.com/rahix/FusedFilamentDesign/pull/59
 
 
 ## [0.26.300] - 2026-07-21
