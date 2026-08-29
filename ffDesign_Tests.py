@@ -140,6 +140,30 @@ class PartialHoleProfiles(ffDesignTestCase_Fc11):
         self.assert_expected_body()
 
 
+class TwoSidedTaperBug(ffDesignTestCase):
+    test_document = "TwoSidedTaperBug.FCStd"
+
+    @unittest.expectedFailure
+    def test_plausibility(self):
+        self.prepare_regression_test()
+        self.assert_expected_body()
+
+    def test_two_sided_taper_bug(self):
+        self.prepare_regression_test()
+
+        # TODO tiPiL2ai: Use the command rather than directly generating using the addon function
+        hole = self.body.Tip
+        Utils.assert_hole(hole)
+
+        ffDesign_RibThreads.verify_rib_thread_suitability(hole)
+
+        dialog = ffDesign_RibThreads.RibThreadsTaskPanel(self.body, hole)
+        Gui.Control.showDialog(dialog)
+        dialog.accept()
+
+        self.assert_expected_body()
+
+
 class RibThreads(ffDesignTestCase):
     test_document = "TapHoles.FCStd"
 
@@ -149,7 +173,7 @@ class RibThreads(ffDesignTestCase):
         """
         self.prepare_regression_test()
 
-        # TODO: Use the command rather than directly generating using the addon function
+        # TODO tiPiL2ai: Use the command rather than directly generating using the addon function
         hole = self.body.Tip
         Utils.assert_hole(hole)
 
