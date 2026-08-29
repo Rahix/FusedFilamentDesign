@@ -427,6 +427,22 @@ def undo_shapebinder_is_safe() -> bool:
     return check_freecad_version(min_version=[1, 1, 0])
 
 
+def two_sided_taper_works(pocket) -> bool:
+    """
+    In some versions of FreeCAD, taper angles do not work reliably on "Two
+    sided" pockets.
+
+    See https://github.com/FreeCAD/FreeCAD/issues/32262
+    """
+    # TODO: Add another return True once there is a fixed version...
+
+    # It got broken with the change introducing `SideType`
+    if hasattr(pocket, "SideType"):
+        return False
+
+    return True
+
+
 def set_pocket_two_lengths(pocket):
     try:
         # In more recent versions, a two-length pocket is created using `SideType`

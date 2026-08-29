@@ -396,14 +396,35 @@ def make_rib_threads(body, hole, global_template: bool, rib_param: RibParameters
     pocket_entrance.Profile = (sketch_entrance, "")
     pocket_entrance.ReferenceAxis = (sketch_entrance, ["N_Axis"])
     pocket_entrance.Reversed = hole.Reversed
-    Utils.set_pocket_two_lengths(pocket_entrance)
-    pocket_entrance.TaperAngle = "-20 deg"
+    pocket_entrance.Label = f"{hole.Label}_ThreadEntrance"
+
     sketch_entrance.Visibility = False
+
+    pocket_entrance.TaperAngle = "-20 deg"
     # 2.8 is roughly the tan(90 - 20 deg), so the taper will be complete
     pocket_entrance.setExpression("Length", f"({varset.Name}.EntranceDiameter - {hole.Name}.Diameter) * 2.8")
-    pocket_entrance.setExpression("Length2", f"{varset.Name}.EntranceDepth")
-    pocket_entrance.Label = f"{hole.Label}_ThreadEntrance"
-    pocket_entrance.recompute()
+
+    if Utils.two_sided_taper_works(pocket_entrance):
+        Utils.set_pocket_two_lengths(pocket_entrance)
+        pocket_entrance.setExpression("Length2", f"{varset.Name}.EntranceDepth")
+        pocket_entrance.recompute()
+    else:
+        pocket_entrance.recompute()
+
+        # if two_sided_taper_works() is False, we build two Pockets, one for each direction...
+
+        Utils.Log.warning("Generating second entrance pocket to work around a bug with two-sided tapered pockets!")
+
+        pocket_entrance2 = body.newObject("PartDesign::Pocket", f"{hole.Name}_ThreadEntrance2")
+        pocket_entrance2.Profile = (sketch_entrance, "")
+        pocket_entrance2.ReferenceAxis = (sketch_entrance, ["N_Axis"])
+        pocket_entrance2.Label = f"{hole.Label}_ThreadEntrance2"
+
+        # This is reversed to the Hole!
+        pocket_entrance2.Reversed = not hole.Reversed
+
+        pocket_entrance2.setExpression("Length", f"{varset.Name}.EntranceDepth")
+        pocket_entrance2.recompute()
 
 
 class RibThreadsTaskPanel:
