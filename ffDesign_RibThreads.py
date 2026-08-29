@@ -308,7 +308,7 @@ def make_rib_threads(body, hole, global_template: bool, rib_param: RibParameters
     Utils.assert_body(body)
     Utils.assert_hole(hole)
 
-    profile_sketch = Utils.get_hole_profile_sketch(hole)
+    profile_sketch, profile_partial = Utils.get_hole_profile_sketch(hole)
 
     template = get_or_create_rib_template(body, hole, global_template, rib_param)
 
@@ -327,7 +327,7 @@ def make_rib_threads(body, hole, global_template: bool, rib_param: RibParameters
 
     sketch_entrance = Utils.make_derived_sketch(body, profile_sketch, "_ThreadEntrance")
 
-    circles = Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole))
+    circles = Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole), profile_partial)
     if len(circles) == 1 and not global_template:
         # In the special case of the Hole only having one circle and we have
         # generated a local template, we can just move this local template in

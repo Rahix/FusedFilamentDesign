@@ -109,10 +109,10 @@ def make_teardrops(
         hole.addProperty("App::PropertyAngle", "TeardropRotation", group="FusedFilamentDesign")
     hole.TeardropRotation = rotation
 
-    profile_sketch = Utils.get_hole_profile_sketch(hole)
+    profile_sketch, profile_partial = Utils.get_hole_profile_sketch(hole)
     teardrop_sketch = Utils.make_derived_sketch(body, profile_sketch, "_Teardrops")
 
-    hole_locations = Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole))
+    hole_locations = Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole), profile_partial)
     for hole_loc in hole_locations:
         make_parametric_teardrop(
             teardrop_sketch,

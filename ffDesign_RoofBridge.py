@@ -99,13 +99,13 @@ def make_roof_bridges(
         hole.addProperty("App::PropertyLength", "RoofBridgeClearance", group="FusedFilamentDesign")
     hole.RoofBridgeClearance = bridge_clearance
 
-    profile_sketch = Utils.get_hole_profile_sketch(hole)
+    profile_sketch, profile_partial = Utils.get_hole_profile_sketch(hole)
     roofbridge_sketch = Utils.make_derived_sketch(body, profile_sketch, "_RoofBridge")
     roofbridge_sketch_other_side = None
     if do_doublesided:
         roofbridge_sketch_other_side = Utils.make_derived_sketch(body, profile_sketch, "_RoofBridge2")
 
-    hole_locations = Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole))
+    hole_locations = Utils.get_sketch_locations(profile_sketch, Utils.get_hole_profile_type(hole), profile_partial)
     for hole_loc in hole_locations:
         make_parametric_roof_bridge(
             roofbridge_sketch,

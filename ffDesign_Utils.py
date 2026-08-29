@@ -225,12 +225,14 @@ def get_hole_profile_sketch(hole):
     if profile_sketch.TypeId != "Sketcher::SketchObject":
         raise ffDesignError("Hole profile must be a Sketch!")
 
-    if hole.Profile[1] != [""]:
-        raise ffDesignError(
-            "Only some parts of the sketch are selected as profile for the PartDesign_Hole. This is not supported yet!"
-        )
-
-    return profile_sketch
+    if hole.Profile[1] in ([""], []):
+        return (profile_sketch, None)
+    else:
+        # Only some edges of the Sketch are selected. We prepare identifying
+        # information for them so we can later filter for only these
+        # geometries:
+        profile_partial = [profile_sketch.Shape.getElementMappedName(edge_name) for edge_name in hole.Profile[1]]
+        return (profile_sketch, profile_partial)
 
 
 def make_derived_sketch(body, original, suffix: str):
@@ -277,6 +279,35 @@ def sketch_external_geo_is_defining(sketch, index):
         return None
 
 
+def profile_partial_contains_geo(sketch, profile_partial, geo_id) -> bool:
+    if profile_partial is None:
+        return True
+
+    geometry_id = sketch.getGeometryId(geo_id)
+    ident = f"g{geometry_id}"
+
+    for pp in profile_partial:
+        if ident in pp:
+            return True
+
+    return False
+
+
+def profile_partial_contains_external_geo(sketch, profile_partial, ext_geo_id) -> bool:
+    if profile_partial is None:
+        return True
+
+    ext_geo = sketch.ExternalGeo[ext_geo_id]
+    geometry_id = Sketcher.ExternalGeometryFacade(ext_geo).Id
+    ident = f"e{geometry_id}"
+
+    for pp in profile_partial:
+        if ident in pp:
+            return True
+
+    return False
+
+
 @dataclasses.dataclass
 class LocationExprSet:
     vector_expr: str
@@ -284,7 +315,7 @@ class LocationExprSet:
     y_expr: str
 
 
-def get_sketch_locations(sketch, profile_type):
+def get_sketch_locations(sketch, profile_type, profile_partial=None):
     assert_sketch(sketch)
 
     def try_make_loc_expr_set(index, obj, kind):
@@ -325,6 +356,10 @@ def get_sketch_locations(sketch, profile_type):
         if sketch.getConstruction(i):
             continue
 
+        # If we are filtering for partial selection, check if this geo is included
+        if not profile_partial_contains_geo(sketch, profile_partial, i):
+            continue
+
         loc = try_make_loc_expr_set(i, obj, "Geometry")
         if loc is not None:
             locations.append(loc)
@@ -332,6 +367,10 @@ def get_sketch_locations(sketch, profile_type):
     for i, obj in enumerate(sketch.ExternalGeo):
         # If this external geometry is not defining, ignore it.
         if not sketch_external_geo_is_defining(sketch, i):
+            continue
+
+        # If we are filtering for partial selection, check if this external geo is included
+        if not profile_partial_contains_external_geo(sketch, profile_partial, i):
             continue
 
         loc = try_make_loc_expr_set(i, obj, "ExternalGeo")
