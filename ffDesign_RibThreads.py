@@ -413,7 +413,7 @@ def make_rib_threads(body, hole, global_template: bool, rib_param: RibParameters
 
         # if two_sided_taper_works() is False, we build two Pockets, one for each direction...
 
-        Utils.Log.warning("Generating second entrance pocket to work around a bug with two-sided tapered pockets!")
+        Utils.Log.info("Generating second entrance pocket to work around a bug with two-sided tapered pockets!")
 
         pocket_entrance2 = body.newObject("PartDesign::Pocket", f"{hole.Name}_ThreadEntrance2")
         pocket_entrance2.Profile = (sketch_entrance, "")
