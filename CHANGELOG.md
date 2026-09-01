@@ -121,7 +121,7 @@ and this project adheres to
 Initial release 🎉
 
 [Unreleased]: https://github.com/rahix/FusedFilamentDesign/compare/v0.26.360...HEAD
-[0.26.360]: https://github.com/Rahix/tbot/compare/v0.26.300...v0.26.360
+[0.26.360]: https://github.com/Rahix/FusedFilamentDesign/compare/v0.26.300...v0.26.360
 [0.26.300]: https://github.com/rahix/FusedFilamentDesign/compare/v0.26.200...v0.26.300
 [0.26.200]: https://github.com/rahix/FusedFilamentDesign/compare/v0.26.100...v0.26.200
 [0.26.100]: https://github.com/rahix/FusedFilamentDesign/compare/v0.25.510...v0.26.100
