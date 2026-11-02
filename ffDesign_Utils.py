@@ -313,6 +313,8 @@ class LocationExprSet:
     vector_expr: str
     x_expr: str
     y_expr: str
+    # Position of the hole in the sketch's local coordinate system.
+    center: App.Vector = None
 
 
 def get_sketch_locations(sketch, profile_type, profile_partial=None):
@@ -329,6 +331,7 @@ def get_sketch_locations(sketch, profile_type, profile_partial=None):
                     vector_expr=f"vector({x_expr}, {y_expr}, 0)",
                     x_expr=f"{x_expr} * 1mm",
                     y_expr=f"{y_expr} * 1mm",
+                    center=App.Vector(obj.X, obj.Y, 0),
                 )
         if (profile_type & MASK_PROFILE_CIRCLES) != 0:
             if obj.TypeId == "Part::GeomCircle":
@@ -337,6 +340,7 @@ def get_sketch_locations(sketch, profile_type, profile_partial=None):
                     vector_expr=center,
                     x_expr=f"{center}.x * 1mm",
                     y_expr=f"{center}.y * 1mm",
+                    center=obj.Center,
                 )
         if (profile_type & MASK_PROFILE_ARCS) != 0:
             if obj.TypeId == "Part::GeomArcOfCircle":
@@ -345,6 +349,7 @@ def get_sketch_locations(sketch, profile_type, profile_partial=None):
                     vector_expr=center,
                     x_expr=f"{center}.x * 1mm",
                     y_expr=f"{center}.y * 1mm",
+                    center=obj.Center,
                 )
 
         return None

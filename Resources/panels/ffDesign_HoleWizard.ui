@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>320</height>
+    <height>380</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -161,6 +161,35 @@ Preconditions:
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="4" column="1">
+    <widget class="QToolButton" name="AddHexNutHole">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Add a hexagonal recess to the end of the hole to hold a hex nut.</string>
+     </property>
+     <property name="text">
+      <string>Add Hex Nut Hole</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>icons:ffDesign_HexNut.svg</normaloff>icons:ffDesign_HexNut.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

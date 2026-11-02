@@ -8,6 +8,7 @@ This is the documentation for the tools included in the _FusedFilamentDesign_ ad
 | | ![ffDesign_RibThreads](../Resources/icons/ffDesign_RibThreads.svg) | [**Thread Forming Ribs**](./ffDesign_RibThreads.md) | Hole geometry for rib thread forming |
 | | ![ffDesign_Teardrop](../Resources/icons/ffDesign_Teardrop.svg) | [**Teardrop Shape**](./ffDesign_Teardrop.md) | Teardrop-shaped holes for better horizontal holes and to avoid seam inaccuracy |
 | | ![ffDesign_RoofBridge](../Resources/icons/ffDesign_RoofBridge.svg) | [**Roof Bridge**](./ffDesign_RoofBridge.md) | Roof bridges for horizontal holes |
+| | ![ffDesign_HexNut](../Resources/icons/ffDesign_HexNut.svg) | [**Hex Nut Hole**](./ffDesign_HexNut.md) | Hexagonal recess at the end of a hole to capture a hex nut |
 | ![ffDesign_ZipTieChannels](../Resources/icons/ffDesign_ZipTieChannels.svg) | | [**Zip Tie Channels**](./ffDesign_ZipTieChannels.md) | Generate parametric zip tie channels on a part's surface |
 | ![ffDesign_AutoFillet](../Resources/icons/ffDesign_AutoFillet.svg) | | [**Auto Fillet**](./ffDesign_AutoFillet.md) | Automatically add fillets to vertical edges |
 

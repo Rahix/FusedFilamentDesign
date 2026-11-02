@@ -8,6 +8,7 @@ selecting one of the following tools:
 - [<img src="../Resources/icons/ffDesign_RibThreads.svg" height="12" /> Thread Forming Ribs](./ffDesign_RibThreads.md)
 - [<img src="../Resources/icons/ffDesign_Teardrop.svg" height="12" /> Teardrop Shape](./ffDesign_Teardrop.md)
 - [<img src="../Resources/icons/ffDesign_RoofBridge.svg" height="12" /> Roof Bridge](./ffDesign_RoofBridge.md)
+- [<img src="../Resources/icons/ffDesign_HexNut.svg" height="12" /> Hex Nut Hole](./ffDesign_HexNut.md)
 
 ## Prerequisites
 - A [PartDesign Hole][pd-hole] feature must be selected or the tip of the
