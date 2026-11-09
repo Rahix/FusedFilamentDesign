@@ -17,7 +17,7 @@ def make_parametric_hex_nut(
     sketch,
     *,
     hole_loc: Utils.LocationExprSet,
-    radius_expr: str,
+    size_expr: str,
     rotation: float = 0.0,
 ):
     Utils.assert_sketch(sketch)
@@ -42,7 +42,9 @@ def make_parametric_hex_nut(
     # allows a collapsed hexagon, so all vertices get their own coordinates.
     x = hole_loc.x_expr
     y = hole_loc.y_expr
-    r = f"({radius_expr})"
+    # The size is across the flats, so the corners sit on a circle of radius
+    # half the flat distance divided by cos(30 degrees), i.e. size / sqrt(3).
+    r = f"({size_expr}) / sqrt(3)"
     vertex_offsets = []
     for i in range(HEX_SIDES):
         angle = 2 * math.pi / HEX_SIDES * i + rotation
@@ -128,7 +130,7 @@ def make_hex_nuts(
     body,
     hole,
     *,
-    nut_radius: App.Units.Quantity,
+    nut_size: App.Units.Quantity,
     nut_depth: App.Units.Quantity,
     far_side: bool = False,
     vertex_up: bool = False,
@@ -140,14 +142,14 @@ def make_hex_nuts(
     # same.  Turning it by 30 degrees is what swaps a flat side and a vertex.
     rotation = math.radians(30) if vertex_up else 0.0
 
-    nut_radius = App.Units.Quantity(nut_radius)
-    assert nut_radius.Unit.Type == "Length"
+    nut_size = App.Units.Quantity(nut_size)
+    assert nut_size.Unit.Type == "Length"
     nut_depth = App.Units.Quantity(nut_depth)
     assert nut_depth.Unit.Type == "Length"
 
-    if "HexNutRadius" not in hole.PropertiesList:
-        hole.addProperty("App::PropertyLength", "HexNutRadius", group="FusedFilamentDesign")
-    hole.HexNutRadius = nut_radius
+    if "HexNutSize" not in hole.PropertiesList:
+        hole.addProperty("App::PropertyLength", "HexNutSize", group="FusedFilamentDesign")
+    hole.HexNutSize = nut_size
 
     if "HexNutDepth" not in hole.PropertiesList:
         hole.addProperty("App::PropertyLength", "HexNutDepth", group="FusedFilamentDesign")
@@ -162,7 +164,7 @@ def make_hex_nuts(
             make_parametric_hex_nut(
                 hex_sketch,
                 hole_loc=hole_loc,
-                radius_expr=f"{hole.Name}.HexNutRadius",
+                size_expr=f"{hole.Name}.HexNutSize",
                 rotation=rotation,
             )
         _make_hex_nut_pocket(body, hole, hex_sketch, reversed=hole.Reversed, suffix="_HexNut")
@@ -182,7 +184,7 @@ def make_hex_nuts(
         make_parametric_hex_nut(
             hex_sketch,
             hole_loc=hole_loc,
-            radius_expr=f"{hole.Name}.HexNutRadius",
+            size_expr=f"{hole.Name}.HexNutSize",
             rotation=rotation,
         )
         _make_hex_nut_pocket(body, hole, hex_sketch, reversed=not hole.Reversed, suffix=suffix)
@@ -197,12 +199,12 @@ class HexNutTaskPanel:
         self.hole = hole
         self.form = Gui.PySideUic.loadUi(Utils.Resources.get_panel("ffDesign_HexNut.ui"))
 
-        self.form.HexNutRadius.setProperty("rawValue", 3.2)
+        self.form.HexNutSize.setProperty("rawValue", 5.5)
         self.form.HexNutDepth.setProperty("rawValue", 3.0)
 
     def accept(self):
         try:
-            nut_radius = self.form.HexNutRadius.property("value")
+            nut_size = self.form.HexNutSize.property("value")
             nut_depth = self.form.HexNutDepth.property("value")
             far_side = self.form.FarSide.checkState() == QtCore.Qt.CheckState.Checked
             vertex_up = self.form.VertexUp.checkState() == QtCore.Qt.CheckState.Checked
@@ -214,7 +216,7 @@ class HexNutTaskPanel:
                 make_hex_nuts(
                     self.body,
                     self.hole,
-                    nut_radius=nut_radius,
+                    nut_size=nut_size,
                     nut_depth=nut_depth,
                     far_side=far_side,
                     vertex_up=vertex_up,

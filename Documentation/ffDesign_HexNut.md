@@ -13,9 +13,9 @@ Run this command to generate a hex nut recess for the selected Hole feature.  A
 dialog will open in the [Task Panel][task-panel] where you can control the
 generation.
 
-- **Hex Nut Radius**: The radius from the hole center to a corner of the hex
-  nut.  This is the radius of the circle around the hexagon, not the distance
-  across the flats.
+- **Hex Nut Size**: The distance between two opposite flat sides of the hex
+  nut, also known as the spanner size.  This is the nominal dimension of a hex
+  nut, not the radius to a corner.
 - **Hex Hole Depth**: The depth of the hexagonal recess, measured from the
   selected face.
 - **Start on the opposite face**: When checked, the recess starts on the
@@ -35,7 +35,7 @@ following features:
 Additionally, two properties will be added to the original Hole feature which
 can be used to parametrically control the recesses:
 
-- `HexNutRadius` is the radius from the hole center to a corner of the hex nut.
+- `HexNutSize` is the distance across the flats of the hex nut.
 - `HexNutDepth` is the depth of the hexagonal recess.
 
 ## Parametricity
@@ -45,7 +45,7 @@ This feature is parametric with respect to the following variables:
   * The position of the circles in the supporting sketch of the original Hole feature.
   * The position of the supporting sketch itself.
 - Hex Nut Properties of the Hole
-  * Hex nut radius (`HexNutRadius` property)
+  * Hex nut size (`HexNutSize` property)
   * Hex nut recess depth (`HexNutDepth` property)
 
 This feature is **not** parametric with respect to the following variables.

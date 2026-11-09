@@ -17,12 +17,12 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Hex Nut Radius</string>
+      <string>Hex Nut Size</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="Gui::QuantitySpinBox" name="HexNutRadius" native="true">
+    <widget class="Gui::QuantitySpinBox" name="HexNutSize" native="true">
      <property name="unit" stdset="0">
       <string notr="true">mm</string>
      </property>
@@ -30,7 +30,7 @@
       <double>0.000000000000000</double>
      </property>
      <property name="toolTip">
-      <string>Radius from the hole center to a corner of the hex nut.</string>
+      <string>Distance between two opposite flat sides of the hex nut (spanner size).</string>
      </property>
     </widget>
    </item>
