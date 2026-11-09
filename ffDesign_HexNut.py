@@ -76,9 +76,6 @@ def _get_far_face_offset(body, hole, profile_sketch, hole_loc):
     Utils.assert_hole(hole)
     Utils.assert_sketch(profile_sketch)
 
-    if hole_loc.center is None:
-        raise Utils.ffDesignError("Could not determine the position of a hole.")
-
     profile_placement = profile_sketch.Placement
     normal = profile_placement.Rotation.multVec(App.Vector(0, 0, 1))
     direction = normal if hole.Reversed else normal * -1
@@ -116,11 +113,11 @@ def _get_far_face_offset(body, hole, profile_sketch, hole_loc):
     return distance if hole.Reversed else -distance
 
 
-def _make_hex_nut_pocket(body, hole, hex_sketch, *, reversed_, suffix):
+def _make_hex_nut_pocket(body, hole, hex_sketch, *, reversed, suffix: str = ""):
     pocket = body.newObject("PartDesign::Pocket", f"{hole.Name}{suffix}")
     pocket.Profile = (hex_sketch, "")
     pocket.ReferenceAxis = (hex_sketch, ["N_Axis"])
-    pocket.Reversed = reversed_
+    pocket.Reversed = reversed
     hex_sketch.Visibility = False
     pocket.setExpression("Length", f"{hole.Name}.HexNutDepth")
     pocket.Label = f"{hole.Label}{suffix}"
@@ -168,7 +165,7 @@ def make_hex_nuts(
                 radius_expr=f"{hole.Name}.HexNutRadius",
                 rotation=rotation,
             )
-        _make_hex_nut_pocket(body, hole, hex_sketch, reversed_=hole.Reversed, suffix="_HexNut")
+        _make_hex_nut_pocket(body, hole, hex_sketch, reversed=hole.Reversed, suffix="_HexNut")
         return
 
     # Each hole can exit through a face at a different distance, and a sketch
@@ -178,7 +175,7 @@ def make_hex_nuts(
     ]
     multiple = len(offsets) > 1
     for i, (hole_loc, offset) in enumerate(offsets):
-        suffix = f"_HexNut{i + 1}" if multiple else "_HexNut"
+        suffix = f"_HexNut{i + 1:03}" if multiple else "_HexNut"
         hex_sketch = Utils.make_derived_sketch(body, profile_sketch, suffix)
         hex_sketch.AttachmentOffset = App.Placement(App.Vector(0, 0, offset), App.Rotation())
         hex_sketch.recompute()
@@ -188,7 +185,7 @@ def make_hex_nuts(
             radius_expr=f"{hole.Name}.HexNutRadius",
             rotation=rotation,
         )
-        _make_hex_nut_pocket(body, hole, hex_sketch, reversed_=not hole.Reversed, suffix=suffix)
+        _make_hex_nut_pocket(body, hole, hex_sketch, reversed=not hole.Reversed, suffix=suffix)
 
 
 class HexNutTaskPanel:

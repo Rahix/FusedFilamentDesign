@@ -3,7 +3,7 @@
 
 This is a [FreeCAD PartDesign][fc-partdesign] addon for FFF/FDM 3D-printing design.  It includes various tools to generate geometry for better printability of a part.
 
-![A demo screenshot of the Hole Wizard in action](./Resources/splash.png).
+![A demo screenshot of the Hole Wizard in action](./Resources/splash.png)
 
 ## Installation
 This addon is available through the [FreeCAD Addon-Manager][addon-manager].

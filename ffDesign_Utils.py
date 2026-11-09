@@ -314,7 +314,7 @@ class LocationExprSet:
     x_expr: str
     y_expr: str
     # Position of the hole in the sketch's local coordinate system.
-    center: App.Vector = None
+    center: App.Vector
 
 
 def get_sketch_locations(sketch, profile_type, profile_partial=None):
