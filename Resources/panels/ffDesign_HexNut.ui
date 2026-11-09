@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>HexNutDialog</class>
+ <widget class="QDialog" name="HexNutDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>190</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Hex Nut Hole</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Hex Nut Size</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="Gui::QuantitySpinBox" name="HexNutSize" native="true">
+     <property name="unit" stdset="0">
+      <string notr="true">mm</string>
+     </property>
+     <property name="minimum" stdset="0">
+      <double>0.000000000000000</double>
+     </property>
+     <property name="toolTip">
+      <string>Distance between two opposite flat sides of the hex nut (spanner size).</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Hex Hole Depth</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="Gui::QuantitySpinBox" name="HexNutDepth" native="true">
+     <property name="unit" stdset="0">
+      <string notr="true">mm</string>
+     </property>
+     <property name="minimum" stdset="0">
+      <double>0.000000000000000</double>
+     </property>
+     <property name="toolTip">
+      <string>Depth of the hexagonal recess, measured from the hole's entry face.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QCheckBox" name="FarSide">
+     <property name="toolTip">
+      <string>Start the hexagonal recess on the opposite face of the part instead of on the hole entry face.</string>
+     </property>
+     <property name="text">
+      <string>Start on the opposite face</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QCheckBox" name="VertexUp">
+     <property name="toolTip">
+      <string>Turn the hexagon by 30 degrees, so don't have to print a bridge.</string>
+     </property>
+     <property name="text">
+      <string>Rotate by 30 degrees</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>The hexagonal recess extends from the selected face into the part.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Gui::QuantitySpinBox</class>
+   <extends>QWidget</extends>
+   <header>gui::quantityspinbox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

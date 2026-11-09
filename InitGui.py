@@ -6,6 +6,7 @@ import ffDesign_CounterboreBridges
 import ffDesign_RibThreads
 import ffDesign_Teardrop
 import ffDesign_RoofBridge
+import ffDesign_HexNut
 import ffDesign_ZipTieChannels
 import ffDesign_AutoFillet
 

@@ -15,6 +15,7 @@ class HoleWizardTaskPanel:
         self.form.AddRibThreads.clicked.connect(self.addRibThreads)
         self.form.AddRoofBridge.clicked.connect(self.addRoofBridge)
         self.form.AddTeardropShape.clicked.connect(self.addTeardropShape)
+        self.form.AddHexNutHole.clicked.connect(self.addHexNutHole)
 
         self.updateCommandAvailability()
 
@@ -28,6 +29,7 @@ class HoleWizardTaskPanel:
         # The following hole tools are always available
         self.form.AddTeardropShape.setEnabled(True)
         self.form.AddRoofBridge.setEnabled(True)
+        self.form.AddHexNutHole.setEnabled(True)
 
     def addCounterboreBridges(self):
         FreeCADGui.Control.closeDialog()
@@ -44,6 +46,10 @@ class HoleWizardTaskPanel:
     def addTeardropShape(self):
         FreeCADGui.Control.closeDialog()
         FreeCADGui.runCommand("ffDesign_Teardrop")
+
+    def addHexNutHole(self):
+        FreeCADGui.Control.closeDialog()
+        FreeCADGui.runCommand("ffDesign_HexNut")
 
     def accept(self):
         FreeCADGui.Control.closeDialog()
